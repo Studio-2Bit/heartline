@@ -1,0 +1,171 @@
+import { Donor, Hospital, Event, SystemLog, User } from '../types';
+
+export const mockPendingDonors: Donor[] = [
+  {
+    id: '1',
+    name: 'John Smith',
+    email: 'john.smith@email.com',
+    bloodType: 'O+',
+    phone: '+1 555-0101',
+    address: '123 Main St, New York, NY 10001',
+    status: 'pending',
+    submittedAt: '2024-01-15T10:30:00Z',
+  },
+  {
+    id: '2',
+    name: 'Sarah Johnson',
+    email: 'sarah.j@email.com',
+    bloodType: 'A+',
+    phone: '+1 555-0102',
+    address: '456 Oak Ave, Los Angeles, CA 90001',
+    status: 'pending',
+    submittedAt: '2024-01-14T14:20:00Z',
+  },
+  {
+    id: '3',
+    name: 'Michael Brown',
+    email: 'mbrown@email.com',
+    bloodType: 'B-',
+    phone: '+1 555-0103',
+    address: '789 Pine Rd, Chicago, IL 60601',
+    status: 'pending',
+    submittedAt: '2024-01-13T09:15:00Z',
+  },
+];
+
+export const mockPendingHospitals: Hospital[] = [
+  {
+    id: '1',
+    name: 'City General Hospital',
+    email: 'admin@citygen.hospital',
+    phone: '+1 555-1001',
+    address: '100 Healthcare Blvd, Boston, MA 02101',
+    licenseNumber: 'LIC-2024-001',
+    status: 'pending',
+    submittedAt: '2024-01-15T08:00:00Z',
+  },
+  {
+    id: '2',
+    name: 'Memorial Medical Center',
+    email: 'info@memorial.med',
+    phone: '+1 555-1002',
+    address: '200 Medical Plaza, Houston, TX 77001',
+    licenseNumber: 'LIC-2024-002',
+    status: 'pending',
+    submittedAt: '2024-01-14T11:30:00Z',
+  },
+];
+
+export const mockPendingEvents: Event[] = [
+  {
+    id: '1',
+    title: 'Community Blood Drive',
+    description: 'Annual blood donation event for the local community',
+    location: 'Community Center, 500 Park Ave, Seattle, WA',
+    date: '2024-02-20T09:00:00Z',
+    organizerName: 'Red Cross Seattle',
+    organizerEmail: 'seattle@redcross.org',
+    status: 'pending',
+    submittedAt: '2024-01-15T13:45:00Z',
+  },
+  {
+    id: '2',
+    title: 'University Blood Donation Camp',
+    description: 'Blood donation camp for students and faculty',
+    location: 'University Campus, San Francisco, CA',
+    date: '2024-02-25T10:00:00Z',
+    organizerName: 'University Health Services',
+    organizerEmail: 'health@university.edu',
+    status: 'pending',
+    submittedAt: '2024-01-14T16:20:00Z',
+  },
+  {
+    id: '3',
+    title: 'Corporate Blood Drive',
+    description: 'Workplace blood donation initiative',
+    location: 'Tech Corp Headquarters, Austin, TX',
+    date: '2024-03-01T11:00:00Z',
+    organizerName: 'Tech Corp HR',
+    organizerEmail: 'hr@techcorp.com',
+    status: 'pending',
+    submittedAt: '2024-01-13T10:00:00Z',
+  },
+];
+
+export const mockSystemLogs: SystemLog[] = [
+  {
+    id: '1',
+    action: 'User Login',
+    user: 'admin@bloodbank.com',
+    timestamp: '2024-01-15T14:30:00Z',
+    details: 'Successful login from IP 192.168.1.100',
+    type: 'info',
+  },
+  {
+    id: '2',
+    action: 'Donor Approved',
+    user: 'admin@bloodbank.com',
+    timestamp: '2024-01-15T14:25:00Z',
+    details: 'Approved donor registration for John Doe',
+    type: 'info',
+  },
+  {
+    id: '3',
+    action: 'Hospital Rejected',
+    user: 'admin@bloodbank.com',
+    timestamp: '2024-01-15T14:20:00Z',
+    details: 'Rejected hospital registration - Invalid license number',
+    type: 'warning',
+  },
+  {
+    id: '4',
+    action: 'Failed Login Attempt',
+    user: 'unknown@email.com',
+    timestamp: '2024-01-15T14:15:00Z',
+    details: 'Failed login attempt from IP 192.168.1.200',
+    type: 'error',
+  },
+  {
+    id: '5',
+    action: 'Settings Updated',
+    user: 'admin@bloodbank.com',
+    timestamp: '2024-01-15T14:10:00Z',
+    details: 'Updated notification settings',
+    type: 'info',
+  },
+];
+
+export const mockUsers: User[] = [
+  {
+    id: '1',
+    name: 'Admin User',
+    email: 'admin@bloodbank.com',
+    role: 'admin',
+    status: 'active',
+    createdAt: '2023-01-01T00:00:00Z',
+  },
+  {
+    id: '2',
+    name: 'Jane Doe',
+    email: 'jane.doe@email.com',
+    role: 'donor',
+    status: 'active',
+    createdAt: '2024-01-10T12:00:00Z',
+  },
+  {
+    id: '3',
+    name: 'City Hospital Admin',
+    email: 'admin@cityhospital.com',
+    role: 'hospital',
+    status: 'active',
+    createdAt: '2024-01-12T08:00:00Z',
+  },
+  {
+    id: '4',
+    name: 'Mark Wilson',
+    email: 'mark.w@email.com',
+    role: 'donor',
+    status: 'inactive',
+    createdAt: '2024-01-08T15:30:00Z',
+  },
+];
