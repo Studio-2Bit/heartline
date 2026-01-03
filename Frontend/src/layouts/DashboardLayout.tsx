@@ -16,12 +16,13 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     { path: '/donor/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { path: '/donor/requests', label: 'Blood Requests', icon: FileText },
     { path: '/events', label: 'Events', icon: Calendar },
-    { path: '/donor/profile', label: 'Profile', icon: User }
+    { path: '/donor/leaderboard', label: 'Leader Board', icon: User }
   ];
 
   const hospitalLinks = [
     { path: '/hospital/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { path: '/hospital/create-request', label: 'Create Request', icon: Plus },
+     { path: '/hospital/donorMark', label: 'Mark donors', icon: User },
     { path: '/hospital/events', label: 'My Events', icon: List },
     { path: '/events', label: 'All Events', icon: Calendar }
   ];
