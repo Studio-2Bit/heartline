@@ -12,9 +12,8 @@ export const DonorProfile = () => {
     name: user?.name || '',
     email: user?.email || '',
     phone: user?.phone || '',
-    location: user?.location || '',
-    bloodType: user?.bloodType || '',
-    availabilityStatus: user?.availabilityStatus || 'available'
+    location: user?.location || ''
+    
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -63,22 +62,7 @@ export const DonorProfile = () => {
                       required
                     />
 
-                    <div className="mb-4">
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Blood Type
-                      </label>
-                      <select
-                        value={formData.bloodType}
-                        onChange={(e) => setFormData({ ...formData, bloodType: e.target.value })}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition"
-                        required
-                      >
-                        <option value="">Select Blood Type</option>
-                        {bloodTypes.map(type => (
-                          <option key={type} value={type}>{type}</option>
-                        ))}
-                      </select>
-                    </div>
+                    
 
                     <div className="md:col-span-2">
                       <FormInput
@@ -91,19 +75,7 @@ export const DonorProfile = () => {
                       />
                     </div>
 
-                    <div className="md:col-span-2 mb-4">
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Availability Status
-                      </label>
-                      <select
-                        value={formData.availabilityStatus}
-                        onChange={(e) => setFormData({ ...formData, availabilityStatus: e.target.value as 'available' | 'unavailable' })}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition"
-                      >
-                        <option value="available">Available to Donate</option>
-                        <option value="unavailable">Currently Unavailable</option>
-                      </select>
-                    </div>
+                    
                   </div>
 
                   <button

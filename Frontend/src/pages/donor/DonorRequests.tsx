@@ -68,8 +68,8 @@ export const DonorRequests = () => {
     <DashboardLayout>
       <PageWrapper>
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-800">Blood Requests</h1>
-          <p className="text-gray-600">Find and respond to blood donation requests near you</p>
+          <h1 className="text-3xl font-bold text-gray-700">Find and respond to blood donation requests near you</h1>
+          
         </div>
 
         <div className="mb-6 bg-white rounded-xl shadow-md p-6">

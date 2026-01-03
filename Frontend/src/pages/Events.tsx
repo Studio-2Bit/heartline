@@ -70,8 +70,8 @@ export const Events = () => {
       <PageWrapper>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="mb-8">
-            <h1 className="text-4xl font-bold text-gray-800 mb-2">Upcoming Blood Donation Events</h1>
-            <p className="text-xl text-gray-600">Find and join blood donation events near you</p>
+            <h1 className="text-3xl font-bold text-gray-700 mb-2">Upcoming Blood Donation Events</h1>
+           
           </div>
 
           <div className="mb-8 flex flex-col sm:flex-row gap-4">
