@@ -12,6 +12,7 @@ export interface Donor {
   name: string;
   email: string;
   bloodType: string;
+  certificateImage: string;
   phone: string;
   address: string;
   status: 'pending' | 'approved' | 'rejected';
