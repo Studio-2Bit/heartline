@@ -12,9 +12,12 @@ function AppContent() {
   const { isAuthenticated } = useAuth();
   const [currentPage, setCurrentPage] = useState('dashboard');
 
-  if (!isAuthenticated) {
-    return <Login />;
-  }
+
+
+  //  tempery disable login page ...
+  // if (!isAuthenticated) {
+  //   return <Login />;
+  // }
 
   const renderPage = () => {
     switch (currentPage) {
