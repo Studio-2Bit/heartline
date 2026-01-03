@@ -116,7 +116,7 @@ export const DonorCompleteProfile = () => {
                     </select>
                   </div>
                   <FormInput
-                    label="Blood Bank Registration Number (Optional)"
+                    label="Blood Bank Registration Number"
                     type="text"
                     value={formData.registrationNumber}
                     onChange={(e) => setFormData({ ...formData, registrationNumber: e.target.value })}
