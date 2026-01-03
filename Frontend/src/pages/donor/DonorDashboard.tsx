@@ -52,8 +52,8 @@ export const DonorDashboard = () => {
     <DashboardLayout>
       <PageWrapper>
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-800">Dashboard</h1>
-          <p className="text-gray-600">Welcome back! Here's your donation overview</p>
+          <h1 className="text-3xl font-bold text-gray-700">Welcome back! Here's your donation overview</h1>
+         
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
