@@ -14,7 +14,7 @@ function AppContent() {
 
 
 
-  //  tempery disable login page ...
+  //  tempory disable login page ...
   // if (!isAuthenticated) {
   //   return <Login />;
   // }
