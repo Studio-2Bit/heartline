@@ -34,9 +34,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const response = await loginApi({ email, password, role });
     const { user, token } = response.data;
 
-    if (!user.verified) {
+   /* if (!user.verified) {
       throw new Error('Your account is not verified yet');
-    }
+    }*/
 
     setUser(user);
     localStorage.setItem('user', JSON.stringify(user));

@@ -28,9 +28,9 @@ const ProtectedRoute = ({ children, allowedRole }: { children: React.ReactNode; 
     return <Navigate to={user.role === 'donor' ? '/donor/dashboard' : '/hospital/dashboard'} replace />;
   }
 
-  if (!user.profileCompleted) {
+  /*if (!user.profileCompleted) {
     return <Navigate to={user.role === 'donor' ? '/donor/complete-profile' : '/hospital/complete-profile'} replace />;
-  }
+  }*/
 
   return <>{children}</>;
 };
