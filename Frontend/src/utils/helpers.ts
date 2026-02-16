@@ -15,4 +15,4 @@ export const formatTime = (date: string): string => {
 
 export const bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
-export const urgencyLevels = ['Low', 'Medium', 'High', 'Critical'];
+export const urgencyLevels = ['1 hour', '2 hours', '5 hours', '24 hours', '2 days'];

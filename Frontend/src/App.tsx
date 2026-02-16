@@ -5,6 +5,7 @@ import { Auth } from './pages/Auth';
 import { Events } from './pages/Events';
 import { EventDetails } from './pages/EventDetails';
 import { Notifications } from './pages/Notifications';
+import { pendingRequest} from './pages/pendingRequest';
 import { DonorDashboard } from './pages/donor/DonorDashboard';
 import { DonorProfile } from './pages/donor/DonorProfile';
 import { DonorRequests } from './pages/donor/DonorRequests';
