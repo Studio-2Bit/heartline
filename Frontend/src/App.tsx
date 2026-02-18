@@ -5,6 +5,7 @@ import { Auth } from './pages/Auth';
 import { Events } from './pages/Events';
 import { EventDetails } from './pages/EventDetails';
 import { Notifications } from './pages/Notifications';
+import { pendingRequest} from './pages/pendingRequest';
 import { DonorDashboard } from './pages/donor/DonorDashboard';
 import { DonorProfile } from './pages/donor/DonorProfile';
 import { DonorRequests } from './pages/donor/DonorRequests';
@@ -28,9 +29,9 @@ const ProtectedRoute = ({ children, allowedRole }: { children: React.ReactNode; 
     return <Navigate to={user.role === 'donor' ? '/donor/dashboard' : '/hospital/dashboard'} replace />;
   }
 
-  if (!user.profileCompleted) {
+  /*if (!user.profileCompleted) {
     return <Navigate to={user.role === 'donor' ? '/donor/complete-profile' : '/hospital/complete-profile'} replace />;
-  }
+  }*/
 
   return <>{children}</>;
 };
