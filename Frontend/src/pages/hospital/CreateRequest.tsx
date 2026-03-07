@@ -79,11 +79,11 @@ export const CreateRequest = () => {
                   </div>
 
                   <FormInput
-                    label="Units Needed"
+                    label="Person Count Needed"
                     type="number"
                     value={formData.unitsNeeded}
                     onChange={(e) => setFormData({ ...formData, unitsNeeded: e.target.value })}
-                    placeholder="Number of units"
+                    placeholder="Number of person"
                     required
                     min="1"
                   />
