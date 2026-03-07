@@ -122,7 +122,7 @@ export const EventDetails = () => {
                 <p className="text-gray-600 mb-4">Register for this event and make a difference</p>
                 <button 
                    onClick={() => navigate('/EventRegister')}
-                className="w-full mt-4 flex items-center justify-center space-x-2 bg-white border border-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-50 transition"
+                className="w-full bg-red-500 mt-4 flex items-center justify-center space-x-2  border-gray-300 text-gray-900 py-2 rounded-lg hover:bg-gray-70 transition"
               >
                 <Edit className="h-4 w-4" />
                 <span>Register</span>

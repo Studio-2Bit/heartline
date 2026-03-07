@@ -1,8 +1,10 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const bloodTypes = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
 export default function BloodDonationEventForm() {
+  const navigate = useNavigate();
   const [form, setForm] = useState({
     fullName: "", phone: "", bloodType: "", age: "", gender: "", timeSlot: "", healthNotes: "",
   });
@@ -114,7 +116,8 @@ export default function BloodDonationEventForm() {
               </div>
             </div>
 
-            <button type="submit" style={{
+            <button type="submit"  onClick={() => navigate('/Events')}
+            style={{
               marginTop: 8, width: "100%", padding: "13px",
               background: "#dc2626", color: "#fff", border: "none",
               borderRadius: 8, fontSize: 15, fontWeight: 700,
