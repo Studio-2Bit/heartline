@@ -12,11 +12,7 @@ export const Auth = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-<<<<<<< Updated upstream
     password: '',
-=======
-    password: ''
->>>>>>> Stashed changes
   });
 
   const [error, setError] = useState<string | null>(null);
@@ -29,19 +25,10 @@ export const Auth = () => {
     e.preventDefault();
     setError(null);
 
-<<<<<<< Updated upstream
     // 🔍 VALIDATIONS
     if (!formData.email || !formData.password) {
       setError('Email and password are required');
       return;
-=======
-    if (authMode === 'login') {
-      await login(formData.email, formData.password, userType);
-      navigate(userType === 'donor' ? '/donor/dashboard' : '/hospital/dashboard');
-    } else {
-      await register(formData.name, formData.email, formData.password, userType);
-      navigate(userType === 'donor' ? '/donor/complete-profile' : '/hospital/complete-profile');
->>>>>>> Stashed changes
     }
 
     if (!/\S+@\S+\.\S+/.test(formData.email)) {
@@ -165,7 +152,6 @@ export const Auth = () => {
                     required
                   />
 
-<<<<<<< Updated upstream
                   <button
                     type="submit"
                     disabled={loading}
@@ -204,62 +190,6 @@ export const Auth = () => {
                     </>
                   )}
                 </p>
-=======
-                  {/* Submit Button */}
-                  <button
-                    type="submit"
-                    className="w-full bg-white text-gray-800 py-3 rounded-full font-bold border-2 border-gray-900 hover:bg-gray-900 hover:text-white transition-all duration-300 transform hover:scale-[1.02] active:scale-95 shadow-sm hover:shadow-lg mt-6"
-                  >
-                    {authMode === 'login' ? 'Sign In' : 'Sign Up'}
-                  </button>
-                </form>
-
-                {/* Toggle Auth Mode */}
-                <div className="mt-6 text-center">
-                  <p className="text-gray-600 text-sm">
-                    {authMode === 'login' ? (
-                      <>
-                        Don't have an account?{' '}
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setAuthMode('register');
-                            resetForm();
-                          }}
-                          className="text-red-600 font-bold hover:text-red-700 hover:underline transition-all duration-200"
-                        >
-                          Sign up
-                        </button>
-                      </>
-                    ) : (
-                      <>
-                        Already have an account?{' '}
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setAuthMode('login');
-                            resetForm();
-                          }}
-                          className="text-red-600 font-bold hover:text-red-700 hover:underline transition-all duration-200"
-                        >
-                          Sign in
-                        </button>
-                      </>
-                    )}
-                  </p>
-                </div>
-
-                {authMode === 'login' && (
-                  <div className="mt-4 text-center animate-fadeIn">
-                    <button
-                      type="button"
-                      className="text-sm text-gray-500 hover:text-red-600 font-medium transition-colors duration-200"
-                    >
-                      Forgot Password?
-                    </button>
-                  </div>
-                )}
->>>>>>> Stashed changes
               </div>
             </div>
           </div>
