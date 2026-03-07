@@ -60,15 +60,31 @@ export const RequestCard = ({
           </div>
         )}
       </div>
+          <div className="flex gap-2">
+            {onRespond && (
+              <>
+                <button
+                  onClick={onRespond}
+                  className="flex-1 bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition"
+                >
+                  Submit Response
+                </button>
+                <button
+                  onClick={onRespond}
+                  className="flex-1 bg-gray-400 text-white py-2 rounded-lg hover:bg-gray-500 transition"
+                >
+                  Reject
+                </button>
+              </>
+            )}
+          </div>
+      
 
-      {onRespond && (
-        <button
-          onClick={onRespond}
-          className="w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition"
-        >
-          Respond to Request
-        </button>
-      )}
+        
+
+        
+        
+      
     </div>
   );
 };
