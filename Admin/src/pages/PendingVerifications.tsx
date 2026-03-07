@@ -166,6 +166,17 @@ function DonorCard({ donor, onApprove, onReject }: {
           <MapPin size={16} className="text-gray-400" />
           <span>{donor.address}</span>
         </div>
+       
+      <div className="flex items-center gap-2 text-sm text-gray-600 ml-0">
+        <img 
+          src={donor.certificateImage} 
+          alt="Certificate" 
+          className="w-16 h-16 rounded-lg object-cover cursor-pointer hover:opacity-80 transition-opacity ml-2"
+          onClick={() => window.open(donor.certificateImage, '_blank')}
+        />
+        <br/>
+        <span>Certificate</span>
+      </div>
       </div>
 
       <div className="flex items-center justify-between pt-4 border-t border-gray-200">

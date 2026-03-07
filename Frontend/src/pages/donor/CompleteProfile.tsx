@@ -10,7 +10,7 @@ import { bloodTypes } from '../../utils/helpers';
 
 export const DonorCompleteProfile = () => {
   const [step, setStep] = useState(1);
-  const { updateProfile } = useAuth();
+  //const { updateProfile } = useAuth();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     location: '',

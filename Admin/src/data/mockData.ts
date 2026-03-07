@@ -10,6 +10,7 @@ export const mockPendingDonors: Donor[] = [
     address: '123 Main St, New York, NY 10001',
     status: 'pending',
     submittedAt: '2024-01-15T10:30:00Z',
+    certificateImage: 'https://res.cloudinary.com/dcgfwnzzr/image/upload/v1758995061/samples/chair-and-coffee-table.jpg', // Example image URL
   },
   {
     id: '2',
@@ -20,6 +21,7 @@ export const mockPendingDonors: Donor[] = [
     address: '456 Oak Ave, Los Angeles, CA 90001',
     status: 'pending',
     submittedAt: '2024-01-14T14:20:00Z',
+    certificateImage: 'https://res.cloudinary.com/dcgfwnzzr/image/upload/v1758995052/samples/people/smiling-man.jpg', // Example image URL
   },
   {
     id: '3',
@@ -30,6 +32,7 @@ export const mockPendingDonors: Donor[] = [
     address: '789 Pine Rd, Chicago, IL 60601',
     status: 'pending',
     submittedAt: '2024-01-13T09:15:00Z',
+    certificateImage: 'https://res.cloudinary.com/dcgfwnzzr/image/upload/v1758995061/samples/chair-and-coffee-table.jpg', // Example image URL
   },
 ];
 

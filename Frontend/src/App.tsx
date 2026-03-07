@@ -5,12 +5,15 @@ import { Auth } from './pages/Auth';
 import { Events } from './pages/Events';
 import { EventDetails } from './pages/EventDetails';
 import { Notifications } from './pages/Notifications';
+import { pendingRequest} from './pages/pendingRequest';
 import { DonorDashboard } from './pages/donor/DonorDashboard';
 import { DonorProfile } from './pages/donor/DonorProfile';
 import { DonorRequests } from './pages/donor/DonorRequests';
+import  DonorLeaderboard  from './pages/donor/donationLeaderboard';
 import { DonorCompleteProfile } from './pages/donor/CompleteProfile';
 import { HospitalDashboard } from './pages/hospital/HospitalDashboard';
 import { CreateRequest } from './pages/hospital/CreateRequest';
+import  DonorMark from './pages/hospital/donorMark';
 import { CreateEvent } from './pages/hospital/CreateEvent';
 import { HospitalEvents } from './pages/hospital/HospitalEvents';
 import { HospitalCompleteProfile } from './pages/hospital/CompleteProfile';
@@ -26,9 +29,9 @@ const ProtectedRoute = ({ children, allowedRole }: { children: React.ReactNode; 
     return <Navigate to={user.role === 'donor' ? '/donor/dashboard' : '/hospital/dashboard'} replace />;
   }
 
-  if (!user.profileCompleted) {
+  /*if (!user.profileCompleted) {
     return <Navigate to={user.role === 'donor' ? '/donor/complete-profile' : '/hospital/complete-profile'} replace />;
-  }
+  }*/
 
   return <>{children}</>;
 };
@@ -99,6 +102,14 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/donor/leaderboard"
+        element={
+          <ProtectedRoute allowedRole="donor">
+            <DonorLeaderboard />
+          </ProtectedRoute>
+        }
+      />
 
       <Route
         path="/hospital/complete-profile"
@@ -123,7 +134,18 @@ function AppRoutes() {
             <CreateRequest />
           </ProtectedRoute>
         }
+      
       />
+      <Route
+        path="/hospital/donorMark"
+        element={
+          <ProtectedRoute allowedRole="hospital">
+            <DonorMark />
+          </ProtectedRoute>
+        }
+      
+      />
+      
       <Route
         path="/hospital/create-event"
         element={

@@ -47,8 +47,8 @@ export const HospitalDashboard = () => {
     <DashboardLayout>
       <PageWrapper>
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-800">Hospital Dashboard</h1>
-          <p className="text-gray-600">Manage blood requests and events</p>
+          <h1 className="text-3xl font-bold text-gray-700">Manage blood requests and events</h1>
+          
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
