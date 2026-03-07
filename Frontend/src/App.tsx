@@ -5,7 +5,8 @@ import { Auth } from './pages/Auth';
 import { Events } from './pages/Events';
 import { EventDetails } from './pages/EventDetails';
 import { Notifications } from './pages/Notifications';
-import { pendingRequest} from './pages/pendingRequest';
+
+import  EventRegister from './pages/EventRegister';
 import { DonorDashboard } from './pages/donor/DonorDashboard';
 import { DonorProfile } from './pages/donor/DonorProfile';
 import { DonorRequests } from './pages/donor/DonorRequests';
@@ -69,6 +70,16 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
+
+      <Route
+        path="/EventRegister"
+        element={
+          <ProtectedRoute>
+            <EventRegister />
+          </ProtectedRoute>
+        }
+      />
+      
 
       <Route
         path="/donor/complete-profile"

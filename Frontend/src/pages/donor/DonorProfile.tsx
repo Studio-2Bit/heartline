@@ -1,24 +1,34 @@
 import { useState } from 'react';
-import { Save, User, MapPin, Phone, Droplet, Calendar, CheckCircle } from 'lucide-react';
+import { Save, Droplet, Calendar, CheckCircle, Timer } from 'lucide-react';
 import { DashboardLayout } from '../../layouts/DashboardLayout';
 import { PageWrapper } from '../../components/PageWrapper';
 import { FormInput } from '../../components/FormInput';
 import { useAuth } from '../../context/AuthContext';
-import { bloodTypes } from '../../utils/helpers';
+
+const getDaysUntilAvailable = (nextEligibleDate: string): number => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const eligible = new Date(nextEligibleDate);
+  eligible.setHours(0, 0, 0, 0);
+  const diff = Math.ceil((eligible.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+  return diff > 0 ? diff : 0;
+};
 
 export const DonorProfile = () => {
-  const { user, updateProfile } = useAuth();
+  const { user } = useAuth();
   const [formData, setFormData] = useState({
     name: user?.name || '',
     email: user?.email || '',
     phone: user?.phone || '',
     location: user?.location || ''
-    
   });
+
+  const lastDonationDate = user?.lastDonationDate || 'Dec 27, 2025';
+  const nextEligibleDate = user?.nextEligibleDate || 'Mar 17, 2026';
+  const daysLeft = getDaysUntilAvailable(nextEligibleDate);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    updateProfile(formData);
     alert('Profile updated successfully!');
   };
 
@@ -44,7 +54,6 @@ export const DonorProfile = () => {
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       required
                     />
-
                     <FormInput
                       label="Email Address"
                       type="email"
@@ -53,7 +62,6 @@ export const DonorProfile = () => {
                       required
                       disabled
                     />
-
                     <FormInput
                       label="Phone Number"
                       type="tel"
@@ -61,9 +69,6 @@ export const DonorProfile = () => {
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                       required
                     />
-
-                    
-
                     <div className="md:col-span-2">
                       <FormInput
                         label="Location"
@@ -74,8 +79,6 @@ export const DonorProfile = () => {
                         required
                       />
                     </div>
-
-                    
                   </div>
 
                   <button
@@ -112,9 +115,21 @@ export const DonorProfile = () => {
                 <Droplet className="h-12 w-12 mb-4" />
                 <h3 className="text-2xl font-bold mb-2">12</h3>
                 <p className="text-red-100">Total Donations</p>
-                <div className="mt-4 pt-4 border-t border-white/20">
-                  <p className="text-sm">Next eligible donation</p>
-                  <p className="font-semibold">March 15, 2025</p>
+                <div className="mt-4 pt-4 border-t border-white/20 space-y-3">
+                  <div>
+                    <p className="text-sm text-red-100">Last donation</p>
+                    <p className="font-semibold">{lastDonationDate}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-red-100">Next eligible donation</p>
+                    <p className="font-semibold">{nextEligibleDate}</p>
+                    <div className="flex items-center gap-1 mt-1 bg-white/20 px-2 py-1 rounded-full w-fit">
+                      <Timer className="h-3 w-3" />
+                      <span className="text-xs font-bold">
+                        {daysLeft === 0 ? 'Ready to donate!' : `${daysLeft} days left`}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

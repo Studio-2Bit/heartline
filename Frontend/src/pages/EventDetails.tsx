@@ -1,8 +1,9 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { Calendar, MapPin, Building2, Clock, Users, ArrowLeft } from 'lucide-react';
+import { Calendar, MapPin, Building2, Clock, Users, ArrowLeft, Edit } from 'lucide-react';
 import { MainLayout } from '../layouts/MainLayout';
 import { PageWrapper } from '../components/PageWrapper';
 import { formatDate, formatTime } from '../utils/helpers';
+
 
 const eventData: Record<string, any> = {
   '1': {
@@ -119,8 +120,12 @@ export const EventDetails = () => {
               <div className="bg-red-50 rounded-xl p-6 text-center">
                 <h3 className="text-xl font-bold text-gray-800 mb-2">Ready to Save Lives?</h3>
                 <p className="text-gray-600 mb-4">Register for this event and make a difference</p>
-                <button className="bg-red-600 text-white px-8 py-3 rounded-lg hover:bg-red-700 transition transform hover:scale-105">
-                  Register for Event
+                <button 
+                   onClick={() => navigate('/EventRegister')}
+                className="w-full mt-4 flex items-center justify-center space-x-2 bg-white border border-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-50 transition"
+              >
+                <Edit className="h-4 w-4" />
+                <span>Register</span>
                 </button>
               </div>
             </div>
