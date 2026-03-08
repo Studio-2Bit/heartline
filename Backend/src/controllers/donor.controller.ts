@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { DonorProfile } from '../models/Donor.model';
 import  User  from '../models/User.model';
 import path from 'path';
+import mongoose from 'mongoose';
 
 // POST /api/donor/profile/complete
 export const completeProfile = async (req: Request, res: Response) => {
@@ -20,13 +21,13 @@ export const completeProfile = async (req: Request, res: Response) => {
 
     // Create donor profile
     const profile = await DonorProfile.create({
-      userId,
-      location,
-      phone,
-      bloodType,
-      registrationNumber: registrationNumber || null,
-      idProof,
-    });
+  userId: new mongoose.Types.ObjectId(userId),
+  location,
+  phone,
+  bloodType,
+  ...(registrationNumber && { registrationNumber }),
+  ...(idProof && { idProof }),
+});
 
     // Mark profileCompleted = true on User
     await User.findByIdAndUpdate(userId, { profileCompleted: true });
