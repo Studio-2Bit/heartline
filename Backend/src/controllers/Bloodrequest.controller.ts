@@ -53,8 +53,9 @@ export const getHospitalRequests = async (req: Request, res: Response) => {
   try {
     const hospitalId = (req as any).user.id;
 
-    const requests = await BloodRequest.find({ hospitalId })
-      .sort({ createdAt: -1 });
+const requests = await BloodRequest.find({ 
+  hospitalId: new mongoose.Types.ObjectId(hospitalId) 
+}).sort({ createdAt: -1 });
 
     return res.status(200).json({ requests });
   } catch (error) {

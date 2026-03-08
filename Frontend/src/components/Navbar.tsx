@@ -62,9 +62,17 @@ export const Navbar = () => {
                     Requests
                   </Link>
                 ) : (
-                  <Link to="/hospital/create-request" className="text-gray-700 hover:text-red-600 transition">
-                    Create Request
-                  </Link>
+                  <>
+                    <Link to="/hospital/create-request" className="text-gray-700 hover:text-red-600 transition">
+                      Create Request
+                    </Link>
+                    <Link
+                      to="/hospital/BloodRequest"
+                      className="text-gray-700 hover:text-red-600 transition"
+                    >
+                      Blood Requests
+                    </Link>
+                  </>
                 )}
                 <NotificationBell />
                 <div className="relative group">
@@ -154,13 +162,22 @@ export const Navbar = () => {
                     Requests
                   </Link>
                 ) : (
-                  <Link
-                    to="/hospital/create-request"
-                    className="block py-2 text-gray-700 hover:text-red-600"
-                    onClick={() => setIsOpen(false)}
-                  >
-                    Create Request
-                  </Link>
+                  <><Link
+                        to="/hospital/create-request"
+                        className="block py-2 text-gray-700 hover:text-red-600"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        Create Request
+                      </Link>
+                      <Link
+                        to="/hospital/BloodRequest"
+                        className="block py-2 text-gray-700 hover:text-red-600"
+                        onClick={() => setIsOpen(false)}
+                      >
+                          Blood Requests
+                        </Link></>
+
+
                 )}
                 <Link
                   to="/notifications"
