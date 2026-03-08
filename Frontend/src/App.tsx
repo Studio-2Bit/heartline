@@ -5,7 +5,6 @@ import { Auth } from './pages/Auth';
 import { Events } from './pages/Events';
 import { EventDetails } from './pages/EventDetails';
 import { Notifications } from './pages/Notifications';
-
 import  EventRegister from './pages/EventRegister';
 import { DonorDashboard } from './pages/donor/DonorDashboard';
 import { DonorProfile } from './pages/donor/DonorProfile';
@@ -14,6 +13,7 @@ import  DonorLeaderboard  from './pages/donor/donationLeaderboard';
 import { DonorCompleteProfile } from './pages/donor/CompleteProfile';
 import { HospitalDashboard } from './pages/hospital/HospitalDashboard';
 import { CreateRequest } from './pages/hospital/CreateRequest';
+import  { BloodRequestHistory } from './pages/hospital/BloodRequest'; 
 import  DonorMark from './pages/hospital/donorMark';
 import { CreateEvent } from './pages/hospital/CreateEvent';
 import { HospitalEvents } from './pages/hospital/HospitalEvents';
@@ -147,6 +147,16 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
+
+      <Route
+        path="/hospital/BloodRequest"
+        element={
+          <ProtectedRoute allowedRole="hospital">
+            <BloodRequestHistory />
+          </ProtectedRoute>
+        }
+      />
+
       <Route
         path="/hospital/create-request"
         element={
