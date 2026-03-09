@@ -224,7 +224,7 @@ export default function UserManagement() {
                   {activeTab === 'donor' ? (
                     <>
                       <td className="px-6 py-4">
-                        <span className={`inline-flex px-3 py-1 rounded-full text-xs font-bold ${BLOOD_BADGE[user.bloodType] || 'bg-gray-100 text-gray-600'}`}>
+                        <span className={`inline-flex px-3 py-1 rounded-full text-xs font-bold ${BLOOD_BADGE[user.bloodType as keyof typeof BLOOD_BADGE] || 'bg-gray-100 text-gray-600'}`}>
                           {user.bloodType}
                         </span>
                       </td>
