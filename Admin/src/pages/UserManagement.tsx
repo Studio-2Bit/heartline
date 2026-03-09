@@ -39,11 +39,11 @@ export default function UserManagement() {
     return matchesSearch && matchesStatus;
   });
 
-  const handleDelete = (id) => {
+  const handleDelete = (id: string) => {
     if (confirm('Delete this user?')) setUsers(users.filter(u => u.id !== id));
   };
 
-  const handleToggle = (id) => {
+  const handleToggle = (id: string) => {
     setUsers(users.map(u =>
       u.id === id ? { ...u, status: u.status === 'active' ? 'inactive' : 'active' } : u
     ));
@@ -53,7 +53,7 @@ export default function UserManagement() {
   const hospitalCount = users.filter(u => u.role === 'hospital').length;
   const activeCount = users.filter(u => u.role === activeTab && u.status === 'active').length;
 
-  const switchTab = (tab) => {
+  const switchTab = (tab: string) => {
     setActiveTab(tab);
     setSearchTerm('');
     setFilterStatus('all');
