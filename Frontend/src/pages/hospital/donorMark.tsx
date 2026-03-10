@@ -37,6 +37,7 @@ export default function DonorMark() {
   });
 
   const [donationRecords, setDonationRecords] = useState<DonationRecord[]>([
+    
     {
       id: '1',
       donorId: 'D001',
@@ -58,6 +59,7 @@ export default function DonorMark() {
       timestamp: '2024-11-19T14:15:00'
     }
   ]);
+ 
 
   const [successMessage, setSuccessMessage] = useState('');
 
@@ -333,35 +335,44 @@ export default function DonorMark() {
         <div className="lg:col-span-1">
           <div className="bg-white rounded-2xl p-6 shadow-lg sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto">
             <h2 className="text-2xl font-bold text-gray-900 mb-6">Recent Donations</h2>
+            
+            {/* Search Bar */}
+            <div className="mb-4">
+              <input
+          type="text"
+          placeholder="Search by donor name..."
+          className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-red-600 focus:outline-none transition text-sm"
+              />
+            </div>
 
             {donationRecords.length === 0 ? (
               <p className="text-gray-600 text-center py-8">No donations recorded yet</p>
             ) : (
               <div className="space-y-4">
-                {donationRecords.map((record) => (
-                  <div key={record.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition">
-                    <div className="flex items-start justify-between mb-2">
-                      <h3 className="font-bold text-gray-900">{record.donorName}</h3>
-                      <span className="inline-block px-2 py-1 bg-green-100 text-green-700 text-xs font-bold rounded">
-                        {record.status}
-                      </span>
-                    </div>
-                    <div className="space-y-1 text-sm text-gray-600">
-                      <p className="flex items-center gap-2">
-                        <Calendar className="w-4 h-4" />
-                        {new Date(record.date).toLocaleDateString()}
-                      </p>
-                      <p className="flex items-center gap-2">
-                        <Clock className="w-4 h-4" />
-                        {record.time}
-                      </p>
-                      <p className="flex items-center gap-2">
-                        <Droplet className="w-4 h-4 text-red-600" />
-                        {record.bloodType} - {record.units} unit(s)
-                      </p>
-                    </div>
-                  </div>
-                ))}
+          {donationRecords.map((record) => (
+            <div key={record.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition">
+              <div className="flex items-start justify-between mb-2">
+                <h3 className="font-bold text-gray-900">{record.donorName}</h3>
+                <span className="inline-block px-2 py-1 bg-green-100 text-green-700 text-xs font-bold rounded">
+            {record.status}
+                </span>
+              </div>
+              <div className="space-y-1 text-sm text-gray-600">
+                <p className="flex items-center gap-2">
+            <Calendar className="w-4 h-4" />
+            {new Date(record.date).toLocaleDateString()}
+                </p>
+                <p className="flex items-center gap-2">
+            <Clock className="w-4 h-4" />
+            {record.time}
+                </p>
+                <p className="flex items-center gap-2">
+            <Droplet className="w-4 h-4 text-red-600" />
+            {record.bloodType}
+                </p>
+              </div>
+            </div>
+          ))}
               </div>
             )}
           </div>

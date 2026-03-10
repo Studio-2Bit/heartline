@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { loginApi, registerApi } from '../services/auth.api';
 
+
 interface User {
   id: string;
   name: string;
@@ -8,6 +9,12 @@ interface User {
   role: 'donor' | 'hospital';
   profileCompleted: boolean;
   verified?: boolean;
+  bloodType?: string;
+  location?: string;
+  phone?: string;
+  nextEligibleDate?: string;
+  lastDonationDate?: string;
+  availabilityStatus?: 'available' | 'unavailable';
 }
 
 interface AuthContextType {

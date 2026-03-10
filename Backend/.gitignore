@@ -1,3 +1,28 @@
+<<<<<<< HEAD
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.env
+=======
 node_modules/
 .env
 .env.local
@@ -7,3 +32,4 @@ build/
 *.log
 npm-debug.log*
 yarn-debug.log*
+>>>>>>> 3209f1c223e675f616191de65d46b6815fb75a01
