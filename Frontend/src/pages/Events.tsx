@@ -1,68 +1,54 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Search, Filter } from 'lucide-react';
 import { MainLayout } from '../layouts/MainLayout';
 import { PageWrapper } from '../components/PageWrapper';
 import { EventCard } from '../components/EventCard';
+import { getAllActiveEventsApi } from '../services/event.api';
 
-const allEvents = [
-  {
-    id: '1',
-    title: 'Community Blood Drive',
-    date: '2025-01-15T10:00:00',
-    location: 'City Community Center, Downtown',
-    hospital: 'City General Hospital',
-    description: 'Join us for our monthly community blood drive. Your donation can save up to 3 lives! Free refreshments and health screening for all donors.'
-  },
-  {
-    id: '2',
-    title: 'Emergency Blood Donation Camp',
-    date: '2025-01-20T09:00:00',
-    location: 'Central Park Plaza',
-    hospital: 'Metropolitan Hospital',
-    description: 'Critical need for O+ and AB- blood types. Walk-ins welcome! Mobile blood collection units will be available throughout the day.'
-  },
-  {
-    id: '3',
-    title: 'Corporate Blood Donation Day',
-    date: '2025-01-25T11:00:00',
-    location: 'Tech Hub Convention Center',
-    hospital: 'University Medical Center',
-    description: 'Special corporate event with free health checkups for all donors. Partnership with local tech companies to encourage workplace blood donation.'
-  },
-  {
-    id: '4',
-    title: 'Weekend Blood Drive',
-    date: '2025-02-01T08:00:00',
-    location: 'Riverside Mall',
-    hospital: 'St. Mary\'s Hospital',
-    description: 'Convenient weekend blood donation event at the mall. Shop and save lives!'
-  },
-  {
-    id: '5',
-    title: 'University Blood Donation Camp',
-    date: '2025-02-05T10:00:00',
-    location: 'State University Campus',
-    hospital: 'University Medical Center',
-    description: 'Special event for students and faculty. First-time donors receive educational materials about blood donation.'
-  },
-  {
-    id: '6',
-    title: 'Mobile Blood Drive - North District',
-    date: '2025-02-10T09:00:00',
-    location: 'North District Community Hall',
-    hospital: 'Regional Medical Center',
-    description: 'Bringing blood donation services to underserved communities. All blood types needed.'
-  }
-];
+interface Event {
+  _id: string;
+  title: string;
+  date: string;
+  time: string;
+  location: string;
+  description: string;
+  expectedDonors?: number;
+  contactPerson: string;
+  contactPhone: string;
+  status: string;
+  hospitalId: {
+    _id: string;
+    name: string;
+  };
+}
 
 export const Events = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [events] = useState(allEvents);
+  const [events, setEvents] = useState<Event[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const filteredEvents = events.filter(event =>
+  useEffect(() => {
+    fetchEvents();
+  }, []);
+
+  const fetchEvents = async () => {
+    setIsLoading(true);
+    setError('');
+    try {
+      const data = await getAllActiveEventsApi();
+      setEvents(data.data.events);
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Failed to fetch events');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const filteredEvents = events.filter((event) =>
     event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
     event.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    event.hospital.toLowerCase().includes(searchTerm.toLowerCase())
+    event.hospitalId?.name?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -70,8 +56,9 @@ export const Events = () => {
       <PageWrapper>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-700 mb-2">Upcoming Blood Donation Events</h1>
-           
+            <h1 className="text-3xl font-bold text-gray-700 mb-2">
+              Upcoming Blood Donation Events
+            </h1>
           </div>
 
           <div className="mb-8 flex flex-col sm:flex-row gap-4">
@@ -91,13 +78,36 @@ export const Events = () => {
             </button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredEvents.map((event) => (
-              <EventCard key={event.id} {...event} />
-            ))}
-          </div>
+          {/* Error */}
+          {error && (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+              <p className="text-red-700 text-sm">{error}</p>
+            </div>
+          )}
 
-          {filteredEvents.length === 0 && (
+          {/* Loading */}
+          {isLoading && (
+            <div className="text-center py-12 text-gray-500">Loading events...</div>
+          )}
+
+          {/* Cards */}
+          {!isLoading && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {filteredEvents.map((event) => (
+                <EventCard
+                  key={event._id}
+                  id={event._id}
+                  title={event.title}
+                  date={event.date}
+                  location={event.location}
+                  hospital={event.hospitalId?.name || 'Unknown Hospital'}
+                  description={event.description}
+                />
+              ))}
+            </div>
+          )}
+
+          {!isLoading && filteredEvents.length === 0 && (
             <div className="text-center py-12">
               <p className="text-gray-600 text-lg">No events found matching your search.</p>
             </div>
