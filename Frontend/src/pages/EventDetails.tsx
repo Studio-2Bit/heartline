@@ -176,7 +176,7 @@ export const EventDetails = () => {
                 <h3 className="text-xl font-bold text-gray-800 mb-2">Ready to Save Lives?</h3>
                 <p className="text-gray-600 mb-4">Register for this event and make a difference</p>
                 <button
-                  onClick={() => navigate('/EventRegister')}
+                  onClick={() => navigate(`/events/register/${event._id}`)}
                   className="w-full bg-red-500 mt-4 flex items-center justify-center space-x-2 border-gray-300 text-white py-2 rounded-lg hover:bg-red-600 transition"
                 >
                   <Edit className="h-4 w-4" />

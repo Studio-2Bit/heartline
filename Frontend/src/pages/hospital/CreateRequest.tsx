@@ -5,6 +5,7 @@ import { DashboardLayout } from '../../layouts/DashboardLayout';
 import { PageWrapper } from '../../components/PageWrapper';
 import { FormInput } from '../../components/FormInput';
 import { bloodTypes, urgencyLevels } from '../../utils/helpers';
+import { createBloodRequestApi } from '../../services/Bloodrequest.api';
 
 export const CreateRequest = () => {
   const navigate = useNavigate();
@@ -14,13 +15,32 @@ export const CreateRequest = () => {
     unitsNeeded: '',
     notes: '',
     contactPerson: '',
-    contactPhone: ''
+    contactPhone: '',
   });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    alert('Blood request submitted successfully! Donors will be notified.');
-    navigate('/hospital/dashboard');
+    setIsLoading(true);
+    setError('');
+
+    try {
+      await createBloodRequestApi({
+        bloodType: formData.bloodType,
+        urgency: formData.urgency,
+        unitsNeeded: Number(formData.unitsNeeded),
+        contactPerson: formData.contactPerson,
+        contactPhone: formData.contactPhone,
+        ...(formData.notes && { notes: formData.notes }),
+      });
+
+      navigate('/hospital/dashboard');
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Failed to submit request. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -40,6 +60,14 @@ export const CreateRequest = () => {
             </div>
           </div>
 
+          {/* Error */}
+          {error && (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6 flex items-start">
+              <AlertCircle className="h-5 w-5 text-red-600 mr-3 mt-0.5 flex-shrink-0" />
+              <p className="text-red-700 text-sm">{error}</p>
+            </div>
+          )}
+
           <div className="bg-white rounded-xl shadow-md p-6">
             <form onSubmit={handleSubmit}>
               <div className="space-y-6">
@@ -55,7 +83,7 @@ export const CreateRequest = () => {
                       required
                     >
                       <option value="">Select Blood Type</option>
-                      {bloodTypes.map(type => (
+                      {bloodTypes.map((type) => (
                         <option key={type} value={type}>{type}</option>
                       ))}
                     </select>
@@ -72,7 +100,7 @@ export const CreateRequest = () => {
                       required
                     >
                       <option value="">Select Urgency Level</option>
-                      {urgencyLevels.map(level => (
+                      {urgencyLevels.map((level) => (
                         <option key={level} value={level}>{level}</option>
                       ))}
                     </select>
@@ -125,10 +153,11 @@ export const CreateRequest = () => {
                 <div className="flex space-x-4">
                   <button
                     type="submit"
-                    className="flex-1 bg-red-600 text-white py-3 rounded-lg hover:bg-red-700 transition flex items-center justify-center space-x-2"
+                    disabled={isLoading}
+                    className="flex-1 bg-red-600 text-white py-3 rounded-lg hover:bg-red-700 transition flex items-center justify-center space-x-2 disabled:bg-gray-400"
                   >
                     <Send className="h-5 w-5" />
-                    <span>Submit Request</span>
+                    <span>{isLoading ? 'Submitting...' : 'Submit Request'}</span>
                   </button>
                   <button
                     type="button"

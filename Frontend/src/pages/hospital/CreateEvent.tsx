@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Calendar, Send } from 'lucide-react';
+import { Calendar, AlertCircle } from 'lucide-react';
 import { DashboardLayout } from '../../layouts/DashboardLayout';
 import { PageWrapper } from '../../components/PageWrapper';
 import { FormInput } from '../../components/FormInput';
+import { createEventApi } from '../../services/event.api';
 
 export const CreateEvent = () => {
   const navigate = useNavigate();
@@ -15,13 +16,34 @@ export const CreateEvent = () => {
     description: '',
     expectedDonors: '',
     contactPerson: '',
-    contactPhone: ''
+    contactPhone: '',
   });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    alert('Event created successfully! Donors will be notified.');
-    navigate('/hospital/events');
+    setIsLoading(true);
+    setError('');
+
+    try {
+      await createEventApi({
+        title: formData.title,
+        date: formData.date,
+        time: formData.time,
+        location: formData.location,
+        description: formData.description,
+        contactPerson: formData.contactPerson,
+        contactPhone: formData.contactPhone,
+        ...(formData.expectedDonors && { expectedDonors: Number(formData.expectedDonors) }),
+      });
+
+      navigate('/hospital/events');
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Failed to create event. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -32,6 +54,14 @@ export const CreateEvent = () => {
             <h1 className="text-3xl font-bold text-gray-800">Create Blood Donation Event</h1>
             <p className="text-gray-600">Organize a new blood donation drive</p>
           </div>
+
+          {/* Error */}
+          {error && (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6 flex items-start">
+              <AlertCircle className="h-5 w-5 text-red-600 mr-3 mt-0.5 flex-shrink-0" />
+              <p className="text-red-700 text-sm">{error}</p>
+            </div>
+          )}
 
           <div className="bg-white rounded-xl shadow-md p-6">
             <form onSubmit={handleSubmit}>
@@ -53,7 +83,6 @@ export const CreateEvent = () => {
                     onChange={(e) => setFormData({ ...formData, date: e.target.value })}
                     required
                   />
-
                   <FormInput
                     label="Event Time"
                     type="time"
@@ -95,7 +124,6 @@ export const CreateEvent = () => {
                     placeholder="Estimated number"
                     min="1"
                   />
-
                   <FormInput
                     label="Contact Person"
                     type="text"
@@ -118,10 +146,11 @@ export const CreateEvent = () => {
                 <div className="flex space-x-4">
                   <button
                     type="submit"
-                    className="flex-1 bg-red-600 text-white py-3 rounded-lg hover:bg-red-700 transition flex items-center justify-center space-x-2"
+                    disabled={isLoading}
+                    className="flex-1 bg-red-600 text-white py-3 rounded-lg hover:bg-red-700 transition flex items-center justify-center space-x-2 disabled:bg-gray-400"
                   >
                     <Calendar className="h-5 w-5" />
-                    <span>Create Event</span>
+                    <span>{isLoading ? 'Creating...' : 'Create Event'}</span>
                   </button>
                   <button
                     type="button"
