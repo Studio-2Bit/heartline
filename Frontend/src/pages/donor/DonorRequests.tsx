@@ -3,7 +3,7 @@ import { Search, MapPin } from 'lucide-react';
 import { DashboardLayout } from '../../layouts/DashboardLayout';
 import { PageWrapper } from '../../components/PageWrapper';
 import { RequestCard } from '../../components/RequestCard';
-import { getAllActiveRequestsApi } from '../../services/Bloodrequest.api';
+import { getAllActiveRequestsApi, respondToRequestApi } from '../../services/Bloodrequest.api';
 
 interface BloodRequest {
   _id: string;
@@ -45,6 +45,15 @@ export const DonorRequests = () => {
       setIsLoading(false);
     }
   };
+
+  const handleRespond = async (requestId: string) => {
+  try {
+    await respondToRequestApi(requestId);
+    alert('Thank you! Your response has been submitted.');
+  } catch (err: any) {
+    alert(err.response?.data?.message || 'Failed to submit response');
+  }
+};
 
   const timeAgo = (dateStr: string) => {
     const diff = Date.now() - new Date(dateStr).getTime();
@@ -125,7 +134,7 @@ export const DonorRequests = () => {
                 location={request.hospitalId?.name || 'Unknown Location'}
                 timeAgo={timeAgo(request.createdAt)}
                 notes={request.notes || ''}
-                onRespond={() => alert('Thank you! Your response has been submitted.')}
+                onRespond={() => handleRespond(request._id)}
               />
             ))}
           </div>
