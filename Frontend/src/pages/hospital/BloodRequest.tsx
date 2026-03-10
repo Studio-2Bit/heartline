@@ -38,8 +38,8 @@ export const BloodRequestHistory = () => {
     setError('');
     try {
       const data = await getHospitalRequestsApi();
-       console.log('RESPONSE:', data);        // ← add this
-    console.log('REQUESTS:', data.data);   // ← add this
+       console.log('RESPONSE:', data);        
+    console.log('REQUESTS:', data.data);   
       setRequests(data.data.requests);
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to fetch requests');

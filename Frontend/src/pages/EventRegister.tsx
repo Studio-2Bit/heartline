@@ -1,20 +1,48 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { registerForEventApi } from "../services/EventRegister.api";
 
 const bloodTypes = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
 export default function BloodDonationEventForm() {
   const navigate = useNavigate();
+  const { eventId } = useParams<{ eventId: string }>();
+
   const [form, setForm] = useState({
     fullName: "", phone: "", bloodType: "", age: "", gender: "", timeSlot: "", healthNotes: "",
   });
   const [submitted, setSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const set = (key: string, val: string) => setForm(f => ({ ...f, [key]: val }));
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    if (!eventId) {
+      setError("Event ID is missing. Please go back and try again.");
+      return;
+    }
+
+    setIsLoading(true);
+    setError("");
+
+    try {
+      await registerForEventApi(eventId, {
+        fullName: form.fullName,
+        phone: form.phone,
+        bloodType: form.bloodType,
+        age: Number(form.age),
+        gender: form.gender,
+        timeSlot: form.timeSlot,
+        ...(form.healthNotes && { healthNotes: form.healthNotes }),
+      });
+      setSubmitted(true);
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Registration failed. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   if (submitted) {
@@ -27,10 +55,10 @@ export default function BloodDonationEventForm() {
             Thank you, <strong>{form.fullName}</strong>! Your slot at <strong>{form.timeSlot}</strong> has been confirmed.
           </p>
           <button
-            onClick={() => { setSubmitted(false); setForm({ fullName: "", phone: "", bloodType: "", age: "", gender: "", timeSlot: "", healthNotes: "" }); }}
+            onClick={() => navigate("/events")}
             style={{ marginTop: 24, background: "#dc2626", color: "#fff", border: "none", borderRadius: 8, padding: "10px 24px", fontWeight: 600, fontSize: 14, cursor: "pointer" }}
           >
-            Register Again
+            Back to Events
           </button>
         </div>
       </div>
@@ -48,10 +76,17 @@ export default function BloodDonationEventForm() {
               <span style={{ fontSize: 32 }}>🩸</span>
               <div>
                 <h1 style={{ color: "#fff", fontSize: 20, fontWeight: 700, margin: 0 }}>Blood Donation Event</h1>
-                <p style={{ color: "#fecaca", fontSize: 13, margin: 0, marginTop: 2 }}>April 12, 2025 · City Medical Center, Colombo</p>
+                <p style={{ color: "#fecaca", fontSize: 13, margin: 0, marginTop: 2 }}>Register to participate in this event</p>
               </div>
             </div>
           </div>
+
+          {/* Error */}
+          {error && (
+            <div style={{ margin: "16px 32px 0", background: "#fef2f2", border: "1px solid #fecaca", borderRadius: 8, padding: "12px 16px", color: "#dc2626", fontSize: 14 }}>
+              {error}
+            </div>
+          )}
 
           {/* Form */}
           <form onSubmit={handleSubmit} style={{ padding: "28px 32px" }}>
@@ -108,7 +143,7 @@ export default function BloodDonationEventForm() {
                 <Label>Health Diseases / Medical Conditions</Label>
                 <textarea
                   rows={3}
-                  placeholder="List any health diseases or medical conditions (e.g. diabetes, hypertension)..."
+                  placeholder="List any health diseases or medical conditions..."
                   value={form.healthNotes}
                   onChange={e => set("healthNotes", e.target.value)}
                   style={{ width: "100%", padding: "10px 14px", border: "1.5px solid #e2e8f0", borderRadius: 8, fontSize: 14, fontFamily: "inherit", resize: "vertical", outline: "none", boxSizing: "border-box", color: "#1e293b" }}
@@ -116,14 +151,18 @@ export default function BloodDonationEventForm() {
               </div>
             </div>
 
-            <button type="submit"  onClick={() => navigate('/Events')}
-            style={{
-              marginTop: 8, width: "100%", padding: "13px",
-              background: "#dc2626", color: "#fff", border: "none",
-              borderRadius: 8, fontSize: 15, fontWeight: 700,
-              cursor: "pointer", fontFamily: "inherit",
-            }}>
-              Register Now
+            <button
+              type="submit"
+              disabled={isLoading}
+              style={{
+                marginTop: 16, width: "100%", padding: "13px",
+                background: isLoading ? "#9ca3af" : "#dc2626",
+                color: "#fff", border: "none", borderRadius: 8,
+                fontSize: 15, fontWeight: 700, cursor: isLoading ? "not-allowed" : "pointer",
+                fontFamily: "inherit",
+              }}
+            >
+              {isLoading ? "Registering..." : "Register Now"}
             </button>
           </form>
         </div>
