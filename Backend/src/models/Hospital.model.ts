@@ -1,26 +1,3 @@
-<<<<<<< HEAD
-import mongoose, { Document, Schema } from "mongoose";
-
-export interface IHospital extends Document {
-  name: string;
-  email: string;
-  password: string;
-  phone?: string;
-  address?: string;
-  licenseNumber: string;
-  isVerified: boolean;
-}
-
-const HospitalSchema = new Schema<IHospital>(
-  {
-    name: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-    phone: { type: String },
-    address: { type: String },
-    licenseNumber: { type: String, required: true },
-    isVerified: { type: Boolean, default: false },
-=======
 import mongoose, { Schema, Document } from 'mongoose';
 
 export interface IHospitalProfile extends Document {
@@ -67,13 +44,8 @@ const HospitalProfileSchema = new Schema<IHospitalProfile>(
       type: Boolean,
       default: false,
     },
->>>>>>> 0bbeadc733ff949c1aa37a11507a967d0aa1da5a
   },
   { timestamps: true }
 );
 
-<<<<<<< HEAD
-export default mongoose.model<IHospital>("Hospital", HospitalSchema);
-=======
 export const HospitalProfile = mongoose.model<IHospitalProfile>('HospitalProfile', HospitalProfileSchema);
->>>>>>> 0bbeadc733ff949c1aa37a11507a967d0aa1da5a

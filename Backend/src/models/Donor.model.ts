@@ -1,26 +1,3 @@
-<<<<<<< HEAD
-import mongoose, { Document, Schema } from "mongoose";
-
-export interface IDonor extends Document {
-  name: string;
-  email: string;
-  password: string;
-  phone?: string;
-  address?: string;
-  bloodType: string;
-  isVerified: boolean;
-}
-
-const DonorSchema = new Schema<IDonor>(
-  {
-    name: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-    phone: { type: String },
-    address: { type: String },
-    bloodType: { type: String, required: true },
-    isVerified: { type: Boolean, default: false },
-=======
 import mongoose, { Schema, Document } from 'mongoose';
 
 export interface IDonorProfile extends Document {
@@ -84,13 +61,8 @@ const DonorProfileSchema = new Schema<IDonorProfile>(
       type: Number,
       default: 0,
     },
->>>>>>> 0bbeadc733ff949c1aa37a11507a967d0aa1da5a
   },
   { timestamps: true }
 );
 
-<<<<<<< HEAD
-export default mongoose.model<IDonor>("Donor", DonorSchema);
-=======
 export const DonorProfile = mongoose.model<IDonorProfile>('DonorProfile', DonorProfileSchema);
->>>>>>> 0bbeadc733ff949c1aa37a11507a967d0aa1da5a
