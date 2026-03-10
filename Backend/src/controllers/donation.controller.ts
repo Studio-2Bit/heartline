@@ -28,7 +28,7 @@ export const searchDonor = async (req: Request, res: Response) => {
 
     return res.status(200).json({
       donor: {
-        id: user._id,
+        _id: user._id,
         name: user.name,
         email: user.email,
         phone: profile.phone,
@@ -37,6 +37,7 @@ export const searchDonor = async (req: Request, res: Response) => {
         availabilityStatus: profile.availabilityStatus,
         lastDonationDate: profile.lastDonationDate,
         nextEligibleDate: profile.nextEligibleDate,
+        totalDonations: profile.totalDonations, 
       },
     });
   } catch (error) {
