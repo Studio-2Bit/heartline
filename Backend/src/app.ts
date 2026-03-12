@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import dotenv, { config } from 'dotenv';
 import authRoutes from './routes/auth.routes';
 import donorProfileRoutes from './routes/donor.routes';
 import hospitalProfileRoutes from './routes/hospital.routes';
@@ -8,6 +9,9 @@ import donationRoutes from './routes/donation.routes';
 import eventRoutes from './routes/Event.routes';
 import eventRegistrationRoutes from './routes/Eventregistration.routes';
 import bloodRequestResponseRoutes from './routes/bloodRequestResponse.routes';
+import chatbotRoutes from "./routes/chatbot.routes";
+
+dotenv.config();
 
 const app = express();
 
@@ -34,5 +38,6 @@ app.use('/api/event-registrations', eventRegistrationRoutes);
 
 
 app.use('/api/blood-request-responses', bloodRequestResponseRoutes);
+app.use('/api/chat', chatbotRoutes);
 
 export default app;
