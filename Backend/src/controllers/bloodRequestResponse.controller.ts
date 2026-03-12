@@ -4,14 +4,12 @@ import { BloodRequestResponse } from '../models/BloodRequestResponse.model';
 import { DonorProfile } from '../models/Donor.model';
 
 // POST /api/blood-request-responses/:requestId
-// Donor responds to a blood request
 export const respondToRequest = async (req: Request, res: Response) => {
   try {
     const donorId = (req as any).user.id;
     const { requestId } = req.params;
     const { message } = req.body;
 
-    // Prevent duplicate response
     const existing = await BloodRequestResponse.findOne({ requestId, donorId });
     if (existing) {
       return res.status(400).json({ message: 'You have already responded to this request' });
@@ -30,7 +28,6 @@ export const respondToRequest = async (req: Request, res: Response) => {
 };
 
 // GET /api/blood-request-responses/request/:requestId
-// Hospital sees all donors who responded to their request
 export const getRequestResponses = async (req: Request, res: Response) => {
   try {
     const { requestId } = req.params;
@@ -39,14 +36,12 @@ export const getRequestResponses = async (req: Request, res: Response) => {
       .populate('donorId', 'name email')
       .sort({ createdAt: -1 });
 
-    // Get donor profiles for extra info
     const enriched = await Promise.all(
       responses.map(async (r) => {
         const user = r.donorId as any;
         const profile = await DonorProfile.findOne({ userId: user._id });
         return {
           _id: r._id,
-         
           createdAt: r.createdAt,
           donor: {
             _id: user._id,
@@ -56,6 +51,7 @@ export const getRequestResponses = async (req: Request, res: Response) => {
             phone: profile?.phone,
             location: profile?.location,
             availabilityStatus: profile?.availabilityStatus,
+             
           },
         };
       })
@@ -68,16 +64,22 @@ export const getRequestResponses = async (req: Request, res: Response) => {
 };
 
 // GET /api/blood-request-responses/donor
-// Donor sees all requests they responded to
 export const getDonorResponses = async (req: Request, res: Response) => {
   try {
     const donorId = (req as any).user.id;
 
     const responses = await BloodRequestResponse.find({ donorId })
-      .populate('requestId', 'bloodType urgency status')
+      .populate('requestId', 'bloodType urgency status')  // ← populate request details
       .sort({ createdAt: -1 });
 
-    return res.status(200).json({ responses });
+    // rename requestId → request so frontend can use item.request.bloodType etc.
+    const formatted = responses.map((r) => ({
+      _id: r._id,
+      createdAt: r.createdAt,
+      request: r.requestId,  // ← renamed here
+    }));
+
+    return res.status(200).json({ responses: formatted });
   } catch (error) {
     return res.status(500).json({ message: 'Server error', error });
   }

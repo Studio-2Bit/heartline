@@ -58,9 +58,12 @@ export const Navbar = () => {
                   Events
                 </Link>
                 {user.role === 'donor' ? (
-                  <Link to="/donor/requests" className="text-gray-700 hover:text-red-600 transition">
-                    Requests
-                  </Link>
+                  <><Link to="/donor/requests" className="text-gray-700 hover:text-red-600 transition">
+                      Requests
+                    </Link><Link to="/donor/RecentActivity" className="text-gray-700 hover:text-red-600 transition">
+                        Activity
+                      </Link></>
+
                 ) : (
                   <>
                     <Link to="/hospital/create-request" className="text-gray-700 hover:text-red-600 transition">

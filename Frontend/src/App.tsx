@@ -7,6 +7,7 @@ import { EventDetails } from './pages/EventDetails';
 import { Notifications } from './pages/Notifications';
 import  EventRegister from './pages/EventRegister';
 import { DonorDashboard } from './pages/donor/DonorDashboard';
+import { DonorActivity } from './pages/donor/RecentActivity';
 import { DonorProfile } from './pages/donor/DonorProfile';
 import { DonorRequests } from './pages/donor/DonorRequests';
 import  DonorLeaderboard  from './pages/donor/donationLeaderboard';
@@ -107,6 +108,16 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
+
+      <Route
+        path="/donor/RecentActivity"
+        element={
+          <ProtectedRoute allowedRole="donor">
+            <DonorActivity />
+          </ProtectedRoute>
+        }
+      />
+
       <Route
         path="/donor/profile"
         element={
