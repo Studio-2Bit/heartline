@@ -34,3 +34,7 @@ export const respondToRequestApi = (requestId: string, message?: string) => {
 export const getRequestResponsesApi = (requestId: string) => {
   return api.get(`/blood-request-responses/request/${requestId}`);
 };
+
+export const getDonorSuggestionsApi = (requestId: string) => {
+  return api.get(`/blood-requests/${requestId}/suggestions`);
+};

@@ -1,35 +1,32 @@
 import { Request, Response } from 'express';
 import { DonorProfile } from '../models/Donor.model';
-import  User  from '../models/User.model';
-import path from 'path';
+import User from '../models/User.model';
 import mongoose from 'mongoose';
 
 // POST /api/donor/profile/complete
 export const completeProfile = async (req: Request, res: Response) => {
   try {
     const userId = (req as any).user.id;
-    const { location, phone, bloodType, registrationNumber } = req.body;
+    const { location, phone, bloodType, registrationNumber, latitude, longitude } = req.body;
 
-    // Get uploaded file path if exists
-    const idProof = req.file ? req.file.filename : undefined;  
+    const idProof = req.file ? req.file.filename : undefined;
 
-    // Check if profile already exists
     const existing = await DonorProfile.findOne({ userId });
     if (existing) {
       return res.status(400).json({ message: 'Profile already completed' });
     }
 
-    // Create donor profile
     const profile = await DonorProfile.create({
-  userId: new mongoose.Types.ObjectId(userId),
-  location,
-  phone,
-  bloodType,
-  ...(registrationNumber && { registrationNumber }),
-  ...(idProof && { idProof }),
-});
+      userId: new mongoose.Types.ObjectId(userId),
+      location,
+      phone,
+      bloodType,
+      ...(registrationNumber && { registrationNumber }),
+      ...(idProof && { idProof }),
+      ...(latitude && { latitude: Number(latitude) }),
+      ...(longitude && { longitude: Number(longitude) }),
+    });
 
-    // Mark profileCompleted = true on User
     await User.findByIdAndUpdate(userId, { profileCompleted: true });
 
     return res.status(201).json({
@@ -61,12 +58,14 @@ export const getProfile = async (req: Request, res: Response) => {
 export const updateProfile = async (req: Request, res: Response) => {
   try {
     const userId = (req as any).user.id;
-    const { location, phone, bloodType, registrationNumber } = req.body;
+    const { location, phone, bloodType, registrationNumber, latitude, longitude } = req.body;
 
     const idProof = req.file ? req.file.filename : undefined;
 
     const updateData: any = { location, phone, bloodType, registrationNumber };
     if (idProof) updateData.idProof = idProof;
+    if (latitude) updateData.latitude = Number(latitude);
+    if (longitude) updateData.longitude = Number(longitude);
 
     const profile = await DonorProfile.findOneAndUpdate(
       { userId },
