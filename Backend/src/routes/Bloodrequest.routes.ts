@@ -5,8 +5,10 @@ import {
   getHospitalRequests,
   updateRequestStatus,
   deleteRequest,
+  getDonorSuggestions
 } from '../controllers/Bloodrequest.controller';
 import { protect } from '../middlewares/auth.middleware';
+
 
 const router = express.Router();
 
@@ -18,5 +20,6 @@ router.post('/', protect, createRequest);                       // POST create n
 router.get('/hospital', protect, getHospitalRequests);          // GET hospital's own requests
 router.patch('/:id/status', protect, updateRequestStatus);      // PATCH update status
 router.delete('/:id', protect, deleteRequest);                  // DELETE cancel request
+router.get('/:id/suggestions', protect, getDonorSuggestions); // GET donor suggestions based on location and blood type
 
 export default router;
