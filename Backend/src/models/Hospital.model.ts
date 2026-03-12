@@ -1,6 +1,7 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
 export interface IHospitalProfile extends Document {
+  _id: mongoose.Types.ObjectId;   // explicitly declare _id
   userId: mongoose.Types.ObjectId;
   hospitalName: string;
   location: string;
@@ -14,6 +15,10 @@ export interface IHospitalProfile extends Document {
 
 const HospitalProfileSchema = new Schema<IHospitalProfile>(
   {
+    _id: {
+      type: Schema.Types.ObjectId, // allow setting _id manually
+      required: true,
+    },
     userId: {
       type: Schema.Types.ObjectId,
       ref: 'User',
@@ -48,4 +53,7 @@ const HospitalProfileSchema = new Schema<IHospitalProfile>(
   { timestamps: true }
 );
 
-export const HospitalProfile = mongoose.model<IHospitalProfile>('HospitalProfile', HospitalProfileSchema);
+export const HospitalProfile = mongoose.model<IHospitalProfile>(
+  'HospitalProfile',
+  HospitalProfileSchema
+);

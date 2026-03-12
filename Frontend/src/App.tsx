@@ -80,6 +80,7 @@ function AppRoutes() {
         }
       />
 
+       <Route path="/events/register/:eventId" element={<EventRegister />} />
       <Route
         path="/Events"
         element={

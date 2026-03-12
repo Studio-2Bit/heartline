@@ -19,13 +19,30 @@ export const createEvent = async (req: Request, res: Response) => {
       contactPerson,
       contactPhone,
       ...(expectedDonors && { expectedDonors: Number(expectedDonors) }),
-      status: 'pending', // always starts as pending
+      status: 'active', // always starts as pending
     });
 
     return res.status(201).json({
       message: 'Event submitted. Waiting for admin approval.',
       event,
     });
+  } catch (error) {
+    return res.status(500).json({ message: 'Server error', error });
+  }
+};
+
+// GET /api/events/:id
+// Get single event by id
+export const getEventById = async (req: Request, res: Response) => {
+  try {
+    const event = await Event.findById(req.params.id)
+      .populate('hospitalId', 'name email');
+
+    if (!event) {
+      return res.status(404).json({ message: 'Event not found' });
+    }
+
+    return res.status(200).json({ event });
   } catch (error) {
     return res.status(500).json({ message: 'Server error', error });
   }
@@ -79,7 +96,7 @@ export const approveEvent = async (req: Request, res: Response) => {
 
     const event = await Event.findByIdAndUpdate(
       id,
-      { status: 'active' },
+      { status: 'pending' },
       { new: true }
     );
 

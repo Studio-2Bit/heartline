@@ -6,6 +6,8 @@ import hospitalProfileRoutes from './routes/hospital.routes';
 import bloodRequestRoutes from './routes/Bloodrequest.routes';
 import donationRoutes from './routes/donation.routes';
 import eventRoutes from './routes/Event.routes';
+import eventRegistrationRoutes from './routes/Eventregistration.routes';
+import bloodRequestResponseRoutes from './routes/bloodRequestResponse.routes';
 
 const app = express();
 
@@ -27,5 +29,10 @@ app.use('/api/donations', donationRoutes);
 
 
 app.use('/api/events', eventRoutes);
+
+app.use('/api/event-registrations', eventRegistrationRoutes);
+
+
+app.use('/api/blood-request-responses', bloodRequestResponseRoutes);
 
 export default app;
