@@ -48,35 +48,7 @@ export const Navbar = () => {
               </>
             ) : (
               <>
-                <Link
-                  to={getDashboardLink()}
-                  className="text-gray-700 hover:text-red-600 transition"
-                >
-                  Dashboard
-                </Link>
-                <Link to="/events" className="text-gray-700 hover:text-red-600 transition">
-                  Events
-                </Link>
-                {user.role === 'donor' ? (
-                  <><Link to="/donor/requests" className="text-gray-700 hover:text-red-600 transition">
-                      Requests
-                    </Link><Link to="/donor/RecentActivity" className="text-gray-700 hover:text-red-600 transition">
-                        Activity
-                      </Link></>
-
-                ) : (
-                  <>
-                    <Link to="/hospital/create-request" className="text-gray-700 hover:text-red-600 transition">
-                      Create Request
-                    </Link>
-                    <Link
-                      to="/hospital/BloodRequest"
-                      className="text-gray-700 hover:text-red-600 transition"
-                    >
-                      Blood Requests
-                    </Link>
-                  </>
-                )}
+                
                 <NotificationBell />
                 <div className="relative group">
                   <button className="flex items-center space-x-2 text-gray-700 hover:text-red-600 transition">
