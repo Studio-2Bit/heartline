@@ -13,6 +13,7 @@ import { DonorRequests } from './pages/donor/DonorRequests';
 import  DonorLeaderboard  from './pages/donor/donationLeaderboard';
 import { DonorCompleteProfile } from './pages/donor/CompleteProfile';
 import { HospitalDashboard } from './pages/hospital/HospitalDashboard';
+import { HospitalProfile } from './pages/hospital/HospitalProfile';
 import { CreateRequest } from './pages/hospital/CreateRequest';
 import  { BloodRequestHistory } from './pages/hospital/BloodRequest'; 
 import  DonorMark from './pages/hospital/donorMark';
@@ -151,6 +152,16 @@ function AppRoutes() {
           </ProfileCompletionRoute>
         }
       />
+
+      <Route
+        path="/hospital/Profile"
+        element={
+          <ProtectedRoute allowedRole="hospital">
+            <HospitalProfile />
+          </ProtectedRoute>
+        }
+      />
+
       <Route
         path="/hospital/dashboard"
         element={
