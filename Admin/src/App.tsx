@@ -8,6 +8,8 @@ import UserManagement from './pages/UserManagement';
 import SystemLogs from './pages/SystemLogs';
 import Settings from './pages/Settings';
 
+
+
 const validPages = ['dashboard', 'verifications', 'users', 'logs', 'settings'];
 
 const getPageFromHash = () => {

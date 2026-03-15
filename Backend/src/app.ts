@@ -10,6 +10,8 @@ import eventRoutes from './routes/Event.routes';
 import eventRegistrationRoutes from './routes/Eventregistration.routes';
 import bloodRequestResponseRoutes from './routes/bloodRequestResponse.routes';
 import chatbotRoutes from "./routes/chatbot.routes";
+import adminRoutes from './routes/admin.routes';
+
 
 dotenv.config();
 
@@ -39,5 +41,7 @@ app.use('/api/event-registrations', eventRegistrationRoutes);
 
 app.use('/api/blood-request-responses', bloodRequestResponseRoutes);
 app.use('/api/chat', chatbotRoutes);
+
+app.use('/api/admin', adminRoutes);
 
 export default app;
