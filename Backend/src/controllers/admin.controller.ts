@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 import User from '../models/User.model';
 import { DonorProfile } from '../models/Donor.model';
 import { HospitalProfile } from '../models/Hospital.model';
+import { createLog } from '../utils/logger';
+import { SystemLog } from '../models/SystemLog.model';
 
 // GET /api/admin/pending-donors
 export const getPendingDonors = async (req: Request, res: Response) => {
@@ -117,8 +119,11 @@ export const verifyUser = async (req: Request, res: Response) => {
     if (!user) return res.status(404).json({ message: 'User not found' });
     if (user.role === 'hospital') {
       await HospitalProfile.findOneAndUpdate({ userId: id }, { isVerified: true });
+      
     }
+    await createLog('info', 'User Verified', user.name, `${user.role} account verified by admin`);
     return res.status(200).json({ message: 'User verified successfully' });
+    
   } catch (error) {
     return res.status(500).json({ message: 'Server error', error });
   }
@@ -133,7 +138,22 @@ export const rejectUser = async (req: Request, res: Response) => {
     if (user.role === 'donor') await DonorProfile.findOneAndDelete({ userId: id });
     if (user.role === 'hospital') await HospitalProfile.findOneAndDelete({ userId: id });
     await User.findByIdAndDelete(id);
+    await createLog('warning', 'User Rejected', user.name, `${user.role} account rejected and deleted`);
     return res.status(200).json({ message: 'User rejected and removed' });
+    
+  } catch (error) {
+    return res.status(500).json({ message: 'Server error', error });
+  }
+};
+
+// GET /api/admin/logs
+export const getSystemLogs = async (req: Request, res: Response) => {
+  try {
+    const logs = await SystemLog.find()
+      .sort({ createdAt: -1 })
+      .limit(100);
+
+    return res.status(200).json({ logs });
   } catch (error) {
     return res.status(500).json({ message: 'Server error', error });
   }
@@ -148,7 +168,51 @@ export const deleteUser = async (req: Request, res: Response) => {
     if (user.role === 'donor') await DonorProfile.findOneAndDelete({ userId: id });
     if (user.role === 'hospital') await HospitalProfile.findOneAndDelete({ userId: id });
     await User.findByIdAndDelete(id);
+    await createLog('error', 'User Deleted', user.name, `${user.role} account deleted by admin`);
     return res.status(200).json({ message: 'User deleted' });
+    
+  } catch (error) {
+    return res.status(500).json({ message: 'Server error', error });
+  }
+};
+
+// GET /api/admin/dashboard-stats
+export const getDashboardStats = async (req: Request, res: Response) => {
+  try {
+    const [
+      totalDonors,
+      totalHospitals,
+      totalUsers,
+      pendingDonors,
+      pendingHospitals,
+      recentUsers,
+    ] = await Promise.all([
+      User.countDocuments({ role: 'donor' }),
+      User.countDocuments({ role: 'hospital' }),
+      User.countDocuments(),
+      User.countDocuments({ role: 'donor', isVerified: false }),
+      User.countDocuments({ role: 'hospital', isVerified: false }),
+      User.find().sort({ createdAt: -1 }).limit(5).lean(),
+    ]);
+
+    const pendingVerifications = pendingDonors + pendingHospitals;
+
+    const recentActivities = recentUsers.map((u) => ({
+      action: u.role === 'donor' ? 'New donor registered' : 'New hospital registered',
+      user: u.name,
+      time: u.createdAt,
+      type: 'success',
+    }));
+
+    return res.status(200).json({
+      stats: {
+        totalDonors,
+        totalHospitals,
+        totalUsers,
+        pendingVerifications,
+      },
+      recentActivities,
+    });
   } catch (error) {
     return res.status(500).json({ message: 'Server error', error });
   }
