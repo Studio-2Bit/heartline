@@ -3,17 +3,24 @@ import mongoose from 'mongoose';
 import { Donation } from '../models/Donation.model';
 import { DonorProfile } from '../models/Donor.model';
 import User from '../models/User.model';
-
-// GET /api/donations/search?donorId=<userId>
+// GET /api/donations/search?query=kaweesha
 export const searchDonor = async (req: Request, res: Response) => {
   try {
-    const { donorId } = req.query;
-    if (!donorId) return res.status(400).json({ message: 'donorId is required' });
+    const { query } = req.query;
+    if (!query) return res.status(400).json({ message: 'query is required' });
 
-    const user = await User.findById(donorId);
+    // Search user by name or email
+    const user = await User.findOne({
+      role: 'donor',
+      $or: [
+        { name: { $regex: query, $options: 'i' } },
+        { email: { $regex: query, $options: 'i' } },
+      ],
+    }as any);
+
     if (!user) return res.status(404).json({ message: 'Donor not found' });
 
-    const profile = await DonorProfile.findOne({ userId: donorId });
+    const profile = await DonorProfile.findOne({ userId: user._id });
     if (!profile) return res.status(404).json({ message: 'Donor profile not found' });
 
     return res.status(200).json({
@@ -39,14 +46,27 @@ export const searchDonor = async (req: Request, res: Response) => {
 export const markDonation = async (req: Request, res: Response) => {
   try {
     const hospitalId = (req as any).user.id;
-    const { donorId, donationDate, donationTime, bloodType, notes } = req.body;
+    const { donorId, donationDate, donationTime, notes } = req.body;
+
+    if (!donorId || !donationDate || !donationTime) {
+      return res.status(400).json({ message: 'donorId, donationDate and donationTime are required' });
+    }
+
+    // Get bloodType from donor profile automatically
+    const donorProfile = await DonorProfile.findOne({ 
+      userId: new mongoose.Types.ObjectId(donorId) 
+    });
+    
+    if (!donorProfile) {
+      return res.status(404).json({ message: 'Donor profile not found' });
+    }
 
     const donation = await Donation.create({
       donorId: new mongoose.Types.ObjectId(donorId),
       hospitalId: new mongoose.Types.ObjectId(hospitalId),
       donationDate,
       donationTime,
-      bloodType,
+      bloodType: donorProfile.bloodType,  // ← from DB not req.body
       ...(notes && { notes }),
     });
 
@@ -55,7 +75,7 @@ export const markDonation = async (req: Request, res: Response) => {
     nextEligibleDate.setDate(nextEligibleDate.getDate() + 90);
 
     await DonorProfile.findOneAndUpdate(
-      { userId: donorId },
+      { userId: new mongoose.Types.ObjectId(donorId) },
       {
         availabilityStatus: 'unavailable',
         lastDonationDate: donationDate,
@@ -66,6 +86,7 @@ export const markDonation = async (req: Request, res: Response) => {
 
     return res.status(201).json({ message: 'Donation marked successfully', donation });
   } catch (error) {
+    console.error('markDonation error:', error);
     return res.status(500).json({ message: 'Server error', error });
   }
 };
