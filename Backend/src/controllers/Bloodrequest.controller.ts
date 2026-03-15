@@ -4,11 +4,15 @@ import { BloodRequest } from '../models/BloodRequest.model';
 import { getDistanceKm } from '../utils/haversine';
 import { HospitalProfile } from '../models/Hospital.model';
 import { DonorProfile } from '../models/Donor.model';
+import { sendSMS } from '../utils/sms';
+import { createNotification } from '../utils/notify';
+import User from '../models/User.model';
 
 // POST /api/blood-requests
 // Hospital creates a new blood request
 export const createRequest = async (req: Request, res: Response) => {
   try {
+   
     const hospitalId = (req as any).user.id;
     const { bloodType, urgency, unitsNeeded, contactPerson, contactPhone, notes } = req.body;
 
@@ -21,18 +25,39 @@ export const createRequest = async (req: Request, res: Response) => {
       contactPhone,
       ...(notes && { notes }),
     });
+    const hospital = await User.findById(hospitalId);
+const matchingDonors = await DonorProfile.find({
+  bloodType: bloodType,
+  availabilityStatus: 'available',
+});
+
+await Promise.all(
+  matchingDonors.map(async (donor) => {
+    await createNotification(
+      donor.userId.toString(),
+      'request',
+      'Blood Request Matches Your Type',
+      `${hospital?.name} urgently needs ${bloodType} blood.`
+    );
+    await sendSMS(
+      donor.phone,
+      `Heartline: ${hospital?.name} urgently needs ${bloodType} blood. You are a match! Please log in to respond.`
+    );
+  })
+);
 
     return res.status(201).json({
       message: 'Blood request created successfully',
       request,
     });
   } catch (error) {
+      
     return res.status(500).json({ message: 'Server error', error });
   }
 };
 
 // GET /api/blood-requests
-// Donors see all active requests
+
 export const getAllRequests = async (req: Request, res: Response) => {
   try {
     const { bloodType } = req.query;
