@@ -3,7 +3,8 @@ import User from '../models/User.model';
 import { DonorProfile } from '../models/Donor.model';
 import { HospitalProfile } from '../models/Hospital.model';
 import { createLog } from '../utils/logger';
-import { SystemLog } from '../models/SystemLog.model';
+import { SystemLog } from'../models/SystemLog.model';
+import bcrypt from 'bcryptjs';
 
 // GET /api/admin/pending-donors
 export const getPendingDonors = async (req: Request, res: Response) => {
@@ -213,6 +214,50 @@ export const getDashboardStats = async (req: Request, res: Response) => {
       },
       recentActivities,
     });
+  } catch (error) {
+    return res.status(500).json({ message: 'Server error', error });
+  }
+};
+
+
+
+// POST /api/admin/verify-password
+export const verifyAdminPassword = async (req: Request, res: Response) => {
+  try {
+    const { password } = req.body;
+    const admin = await User.findById((req as any).user.id);
+    if (!admin) return res.status(404).json({ message: 'Admin not found' });
+
+    const isMatch = await bcrypt.compare(password, admin.password);
+    if (!isMatch) return res.status(401).json({ message: 'Incorrect password' });
+
+    return res.status(200).json({ message: 'Verified' });
+  } catch (error) {
+    return res.status(500).json({ message: 'Server error', error });
+  }
+};
+
+// POST /api/admin/add-admin
+export const addAdmin = async (req: Request, res: Response) => {
+  try {
+    const { email } = req.body;
+
+    const existing = await User.findOne({ email });
+    if (existing) return res.status(400).json({ message: 'User already exists' });
+
+    const hashed = await bcrypt.hash('Admin@123', 10);
+    await User.create({
+      name: 'Admin',
+      email,
+      password: hashed,
+      role: 'admin',
+      isVerified: true,
+      profileCompleted: true,
+    });
+
+    await createLog('info', 'Admin Added', email, 'New admin account created');
+
+    return res.status(201).json({ message: 'Admin added successfully' });
   } catch (error) {
     return res.status(500).json({ message: 'Server error', error });
   }
