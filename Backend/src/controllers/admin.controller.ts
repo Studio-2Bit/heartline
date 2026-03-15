@@ -5,6 +5,8 @@ import { HospitalProfile } from '../models/Hospital.model';
 import { createLog } from '../utils/logger';
 import { SystemLog } from'../models/SystemLog.model';
 import bcrypt from 'bcryptjs';
+import { createNotification } from '../utils/notify';
+import { sendSMS } from '../utils/sms';
 
 // GET /api/admin/pending-donors
 export const getPendingDonors = async (req: Request, res: Response) => {
@@ -116,15 +118,38 @@ export const getAllHospitals = async (req: Request, res: Response) => {
 export const verifyUser = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const user = await User.findByIdAndUpdate(id, { isVerified: true }, { new: true });
-    if (!user) return res.status(404).json({ message: 'User not found' });
-    if (user.role === 'hospital') {
+
+    const verifiedUser = await User.findByIdAndUpdate(id, { isVerified: true }, { new: true });
+    if (!verifiedUser) return res.status(404).json({ message: 'User not found' });
+
+    if (verifiedUser.role === 'hospital') {
       await HospitalProfile.findOneAndUpdate({ userId: id }, { isVerified: true });
-      
     }
-    await createLog('info', 'User Verified', user.name, `${user.role} account verified by admin`);
+
+    // get profile for phone number
+    const profile = verifiedUser.role === 'donor'
+      ? await DonorProfile.findOne({ userId: id })
+      : await HospitalProfile.findOne({ userId: id });
+
+    // send notification
+    await createNotification(
+      id,
+      'success',
+      'Account Verified ✓',
+      'Your account has been verified. You can now respond to blood requests and join events.'
+    );
+
+    // send SMS if phone exists
+    if (profile?.phone) {
+      await sendSMS(
+        profile.phone,
+        `Heartline: Your account has been verified. You can now use all features.`
+      );
+    }
+
+    await createLog('info', 'User Verified', verifiedUser.name, `${verifiedUser.role} account verified by admin`);
+
     return res.status(200).json({ message: 'User verified successfully' });
-    
   } catch (error) {
     return res.status(500).json({ message: 'Server error', error });
   }

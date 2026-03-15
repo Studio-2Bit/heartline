@@ -11,6 +11,7 @@ import eventRegistrationRoutes from './routes/Eventregistration.routes';
 import bloodRequestResponseRoutes from './routes/bloodRequestResponse.routes';
 import chatbotRoutes from "./routes/chatbot.routes";
 import adminRoutes from './routes/admin.routes';
+import notificationRoutes from './routes/notification.routes';
 
 
 dotenv.config();
@@ -43,5 +44,8 @@ app.use('/api/blood-request-responses', bloodRequestResponseRoutes);
 app.use('/api/chat', chatbotRoutes);
 
 app.use('/api/admin', adminRoutes);
+
+
+app.use('/api/notifications', notificationRoutes);
 
 export default app;

@@ -2,6 +2,9 @@ import { Request, Response } from 'express';
 import { DonorProfile } from '../models/Donor.model';
 import User from '../models/User.model';
 import mongoose from 'mongoose';
+import { createNotification } from '../utils/notify';
+import { sendSMS } from '../utils/sms';
+
 
 // POST /api/donor/profile/complete
 export const completeProfile = async (req: Request, res: Response) => {
@@ -47,8 +50,34 @@ export const getProfile = async (req: Request, res: Response) => {
     if (!profile) {
       return res.status(404).json({ message: 'Profile not found' });
     }
+const today = new Date();
+if (
+  profile.availabilityStatus === 'unavailable' &&
+  profile.nextEligibleDate &&
+  new Date(profile.nextEligibleDate) <= today
+) {
+  await DonorProfile.findOneAndUpdate({ userId }, { availabilityStatus: 'available' });
+  await createNotification(
+    userId,
+    'success',
+    'You Are Available to Donate Again! 🩸',
+    'Your 90-day waiting period is over. You can now donate blood again.'
+  );
+}
+await DonorProfile.findOneAndUpdate({ userId }, { availabilityStatus: 'available' });
 
+await createNotification(userId, 'success',
+  'You Can Donate Again! 🩸',
+  'Your 90-day waiting period is over.'
+);
+
+await sendSMS(
+  profile.phone,
+  `Heartline: Your 90-day waiting period is over. You are now eligible to donate blood again!`
+);
     return res.status(200).json({ profile });
+    
+    
   } catch (error) {
     return res.status(500).json({ message: 'Server error', error });
   }
@@ -78,6 +107,7 @@ export const updateProfile = async (req: Request, res: Response) => {
     }
 
     return res.status(200).json({ message: 'Profile updated', profile });
+    
   } catch (error) {
     return res.status(500).json({ message: 'Server error', error });
   }

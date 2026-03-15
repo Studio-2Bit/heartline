@@ -6,6 +6,7 @@ export interface IBloodRequest extends Document {
   urgency: string;
   unitsNeeded: number;
   contactPerson: string;
+  contactPhone: string; 
   notes?: string;
   status: 'active' | 'fulfilled' | 'cancelled';
   createdAt: Date;
@@ -27,7 +28,7 @@ const BloodRequestSchema = new Schema<IBloodRequest>(
     urgency: {
       type: String,
       required: true,
-      enum: ['i hours', '2 hours', '5 hours', '24 hours', '2 days'],
+      enum: ['Critical', 'High', 'Medium', 'Low'],
     },
     unitsNeeded: {
       type: Number,
@@ -38,7 +39,11 @@ const BloodRequestSchema = new Schema<IBloodRequest>(
       type: String,
       required: true,
     },
-    
+
+    contactPhone: {           // ← add this
+  type: String,
+  required: true,
+  },
     notes: {
       type: String,
       default: null,
