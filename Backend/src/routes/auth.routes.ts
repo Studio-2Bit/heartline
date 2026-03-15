@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { login, register, getUsers, completeProfile } from '../controllers/auth.controller';
+import { login, register, getUsers, completeProfile,updatePassword } from '../controllers/auth.controller';
 import { protect } from '../middlewares/auth.middleware';
 
 const router = Router();
@@ -7,6 +7,7 @@ const router = Router();
 router.post('/register', register);
 router.post('/login', login);
 router.get('/', getUsers);
-router.put('/complete-profile', protect, completeProfile); // Protected route
+router.put('/complete-profile', protect, completeProfile);
+router.put('/update-password', protect, updatePassword);
 
 export default router;
