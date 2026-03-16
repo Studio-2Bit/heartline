@@ -278,25 +278,7 @@ export const DonorDashboard = () => {
             )}
 
             {/* Notifications placeholder */}
-            <div className="bg-white rounded-xl shadow-md p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold text-gray-800">Recent Notifications</h3>
-                <Bell className="h-5 w-5 text-gray-400" />
-              </div>
-              <div className="space-y-3">
-                {requests.slice(0, 2).map((r) => (
-                  <div key={r._id} className="border-l-2 border-red-600 pl-3">
-                    <p className="text-sm text-gray-700">
-                      New {r.urgency} request for {r.bloodType} blood
-                    </p>
-                    <p className="text-xs text-gray-500 mt-1">{timeAgo(r.createdAt)}</p>
-                  </div>
-                ))}
-                {requests.length === 0 && (
-                  <p className="text-sm text-gray-400">No new notifications</p>
-                )}
-              </div>
-            </div>
+            
           </div>
         </div>
       </PageWrapper>
