@@ -4,6 +4,7 @@ import { DashboardLayout } from '../../layouts/DashboardLayout';
 import { PageWrapper } from '../../components/PageWrapper';
 import { RequestCard } from '../../components/RequestCard';
 import { getAllActiveRequestsApi, respondToRequestApi } from '../../services/Bloodrequest.api';
+import Chatbot from './Chatbot';
 
 interface BloodRequest {
   _id: string;
@@ -149,6 +150,9 @@ export const DonorRequests = () => {
           </div>
         )}
       </PageWrapper>
+      <div className="fixed bottom-8 left-8 z-50">
+              <Chatbot />
+            </div>
     </DashboardLayout>
   );
 };
