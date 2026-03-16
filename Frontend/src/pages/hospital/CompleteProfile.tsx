@@ -5,8 +5,10 @@ import { MainLayout } from '../../layouts/MainLayout';
 import { PageWrapper } from '../../components/PageWrapper';
 import { FormInput } from '../../components/FormInput';
 import api from '../../services/api';
+import { useAuth } from '../../context/AuthContext';
 
 export const HospitalCompleteProfile = () => {
+  const { markProfileCompleted } = useAuth(); 
   const [step, setStep] = useState(1);
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
@@ -73,7 +75,8 @@ export const HospitalCompleteProfile = () => {
         ...(formData.longitude && { longitude: formData.longitude }),
       });
 
-      navigate('/hospital/dashboard');
+      markProfileCompleted();          
+      navigate('/pending-verification');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to complete profile');
       setStep(1);
@@ -122,7 +125,7 @@ export const HospitalCompleteProfile = () => {
             )}
 
             <div className="mb-8">
-              {/* Step 1 — Basic Details */}
+              {/* Step 1 */}
               {step === 1 && (
                 <div>
                   <h2 className="text-xl font-bold text-gray-800 mb-4">Hospital Information</h2>
@@ -135,7 +138,6 @@ export const HospitalCompleteProfile = () => {
                     required
                   />
 
-                  {/* Location + GPS */}
                   <div className="mb-4">
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Location <span className="text-red-600">*</span>
@@ -155,10 +157,7 @@ export const HospitalCompleteProfile = () => {
                         disabled={isGettingLocation}
                         className="flex items-center gap-2 px-4 py-2 bg-red-50 border border-red-200 text-red-600 rounded-lg hover:bg-red-100 transition disabled:opacity-50 whitespace-nowrap"
                       >
-                        {isGettingLocation
-                          ? <Loader className="h-4 w-4 animate-spin" />
-                          : <MapPin className="h-4 w-4" />
-                        }
+                        {isGettingLocation ? <Loader className="h-4 w-4 animate-spin" /> : <MapPin className="h-4 w-4" />}
                         {isGettingLocation ? 'Getting...' : 'Use GPS'}
                       </button>
                     </div>
@@ -181,7 +180,7 @@ export const HospitalCompleteProfile = () => {
                 </div>
               )}
 
-              {/* Step 2 — Registration */}
+              {/* Step 2 */}
               {step === 2 && (
                 <div>
                   <h2 className="text-xl font-bold text-gray-800 mb-4">Registration Details</h2>

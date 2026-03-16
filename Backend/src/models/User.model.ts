@@ -21,7 +21,7 @@ const UserSchema = new Schema<IUser>(
       enum: ['donor', 'hospital', 'admin'],
       required: true
     },
-    isVerified: { type: Boolean, default: true },
+    isVerified: { type: Boolean, default: false },
     profileCompleted: { type: Boolean, default: false }
   },
   { timestamps: true }
