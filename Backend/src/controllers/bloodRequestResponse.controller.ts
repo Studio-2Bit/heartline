@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import mongoose from 'mongoose';
 import { BloodRequestResponse } from '../models/BloodRequestResponse.model';
 import { DonorProfile } from '../models/Donor.model';
+import { BloodRequest } from '../models/BloodRequest.model';
 
 // POST /api/blood-request-responses/:requestId
 export const respondToRequest = async (req: Request, res: Response) => {
@@ -51,7 +52,6 @@ export const getRequestResponses = async (req: Request, res: Response) => {
             phone: profile?.phone,
             location: profile?.location,
             availabilityStatus: profile?.availabilityStatus,
-             
           },
         };
       })
@@ -69,15 +69,29 @@ export const getDonorResponses = async (req: Request, res: Response) => {
     const donorId = (req as any).user.id;
 
     const responses = await BloodRequestResponse.find({ donorId })
-      .populate('requestId', 'bloodType urgency status')  // ← populate request details
       .sort({ createdAt: -1 });
 
-    // rename requestId → request so frontend can use item.request.bloodType etc.
-    const formatted = responses.map((r) => ({
-      _id: r._id,
-      createdAt: r.createdAt,
-      request: r.requestId,  // ← renamed here
-    }));
+    const formatted = await Promise.all(
+      responses.map(async (r) => {
+        // fetch blood request and populate hospitalId to get hospital name
+        const bloodRequest = await BloodRequest.findById(r.requestId)
+          .populate('hospitalId', 'name');
+
+        const hospital = bloodRequest?.hospitalId as any;
+
+        return {
+          _id: r._id,
+          createdAt: r.createdAt,
+          request: {
+            _id: bloodRequest?._id,
+            bloodType: bloodRequest?.bloodType,
+            urgency: bloodRequest?.urgency,
+            status: bloodRequest?.status,
+            hospitalName: hospital?.name ?? 'Unknown Hospital',
+          },
+        };
+      })
+    );
 
     return res.status(200).json({ responses: formatted });
   } catch (error) {

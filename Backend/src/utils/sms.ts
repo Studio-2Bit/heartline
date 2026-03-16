@@ -7,13 +7,14 @@ const client = twilio(
 
 export const sendSMS = async (to: string, message: string) => {
   try {
+    console.log('Sending SMS to:', to);  
     await client.messages.create({
       body: message,
       from: process.env.TWILIO_PHONE_NUMBER,
-      to: to,  // must be in format +94771234567
+      to,
     });
-    console.log(`SMS sent to ${to}`);
+    console.log('SMS sent successfully');
   } catch (err) {
-    console.error('Failed to send SMS:', err);
+    console.error('SMS error:', err);  
   }
 };

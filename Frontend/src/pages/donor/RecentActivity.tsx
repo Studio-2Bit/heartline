@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Droplet, Calendar, MapPin, Clock, CheckCircle, XCircle, AlertCircle, MessageSquare } from 'lucide-react';
+import { Droplet, Calendar, MapPin, Clock, CheckCircle, XCircle, AlertCircle, MessageSquare, Building2 } from 'lucide-react';
 import { DashboardLayout } from '../../layouts/DashboardLayout';
 import { PageWrapper } from '../../components/PageWrapper';
 import api from '../../services/api';
 
-// ── Types ───────────────────────────────────────────────────────────
 interface BloodResponse {
   _id: string;
   createdAt: string;
@@ -34,7 +33,6 @@ interface EventRegistration {
   };
 }
 
-// ── Color helpers ───────────────────────────────────────────────────
 const urgencyColors: Record<string, string> = {
   Critical: 'bg-red-100 text-red-700',
   High: 'bg-orange-100 text-orange-700',
@@ -54,10 +52,8 @@ const requestStatusColors: Record<string, string> = {
   cancelled: 'bg-gray-100 text-gray-500',
 };
 
-// ── Main Page ───────────────────────────────────────────────────────
 export const DonorActivity = () => {
   const [activeTab, setActiveTab] = useState<'responses' | 'registrations'>('responses');
-
   const [responses, setResponses] = useState<BloodResponse[]>([]);
   const [registrations, setRegistrations] = useState<EventRegistration[]>([]);
   const [isLoadingResponses, setIsLoadingResponses] = useState(false);
@@ -110,7 +106,6 @@ export const DonorActivity = () => {
       <PageWrapper>
         <div className="max-w-3xl mx-auto">
 
-          {/* Header */}
           <div className="mb-6">
             <h1 className="text-3xl font-bold text-gray-800">My Activity</h1>
             <p className="text-gray-600">Track your blood request responses and event registrations</p>
@@ -171,21 +166,31 @@ export const DonorActivity = () => {
                 <div className="text-center py-16 bg-white rounded-xl shadow-md">
                   <MessageSquare className="h-12 w-12 text-gray-300 mx-auto mb-3" />
                   <p className="text-gray-500 font-medium">You haven't responded to any blood requests yet</p>
-                 
                 </div>
               )}
 
               <div className="space-y-3">
                 {responses.map((item) => (
                   <div key={item._id} className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-                    <div className="flex items-start justify-between">
+                    <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center gap-3">
                         <div className="bg-red-100 p-2 rounded-lg">
                           <Droplet className="h-5 w-5 text-red-600" />
                         </div>
                         <div>
-                          
-                          <p className="text-xs text-gray-400 mt-0.5 flex items-center gap-1">
+                          {/* ← hospital name */}
+                          <div className="flex items-center gap-1.5 text-gray-800 font-bold">
+                            <Building2 className="h-4 w-4 text-gray-400" />
+                            {item.request?.hospitalName ?? 'Unknown Hospital'}
+                          </div>
+                          {/* ← blood type */}
+                          <div className="flex items-center gap-1.5 mt-1">
+                            <Droplet className="h-3.5 w-3.5 text-red-500" />
+                            <span className="text-sm font-semibold text-red-600">
+                              Blood Type: {item.request?.bloodType ?? '—'}
+                            </span>
+                          </div>
+                          <p className="text-xs text-gray-400 mt-1 flex items-center gap-1">
                             <Clock className="h-3 w-3" />
                             Responded on {new Date(item.createdAt).toLocaleDateString('en-US', {
                               day: 'numeric', month: 'short', year: 'numeric'
@@ -231,7 +236,6 @@ export const DonorActivity = () => {
                 <div className="text-center py-16 bg-white rounded-xl shadow-md">
                   <Calendar className="h-12 w-12 text-gray-300 mx-auto mb-3" />
                   <p className="text-gray-500 font-medium">You haven't registered for any events yet</p>
-                 
                 </div>
               )}
 
@@ -254,11 +258,11 @@ export const DonorActivity = () => {
                       </div>
                       <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${registrationStatusColors[item.status] || 'bg-gray-100 text-gray-500'}`}>
                         {item.status === 'registered' && <span className="flex items-center gap-1"><CheckCircle className="h-3 w-3" />Registered</span>}
-                        
+                        {item.status === 'attended' && <span className="flex items-center gap-1"><CheckCircle className="h-3 w-3" />Attended</span>}
+                        {item.status === 'cancelled' && <span className="flex items-center gap-1"><XCircle className="h-3 w-3" />Cancelled</span>}
                       </span>
                     </div>
 
-                    {/* Event details */}
                     <div className="grid grid-cols-2 gap-2 text-sm mb-3">
                       <div className="flex items-center gap-2 text-gray-500">
                         <Calendar className="h-3.5 w-3.5" />
@@ -281,7 +285,6 @@ export const DonorActivity = () => {
                       </div>
                     </div>
 
-                    {/* Cancel button — only if registered and event still active */}
                     {item.status === 'registered' && item.event?.status === 'active' && (
                       <div className="flex justify-end border-t border-gray-100 pt-3">
                         <button
