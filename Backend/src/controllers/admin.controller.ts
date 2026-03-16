@@ -24,6 +24,7 @@ export const getPendingDonors = async (req: Request, res: Response) => {
           location: profile?.location,
           registrationNumber: profile?.registrationNumber,
           totalDonations: profile?.totalDonations,
+           idProof: profile?.idProof,
           createdAt: u.createdAt,
         };
       })
