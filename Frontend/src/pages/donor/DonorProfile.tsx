@@ -3,12 +3,9 @@ import { Save, Droplet, Calendar, CheckCircle, Timer, AlertCircle, Loader, MapPi
 import { DashboardLayout } from '../../layouts/DashboardLayout';
 import { PageWrapper } from '../../components/PageWrapper';
 import { FormInput } from '../../components/FormInput';
-<<<<<<< HEAD
 import { useAuth } from '../../context/AuthContext';
 import Chatbot from './Chatbot';
-=======
 import api from '../../services/api';
->>>>>>> f873f9274a05568a1126a420baa34cce8a138e44
 
 const getDaysUntilAvailable = (nextEligibleDate: string): number => {
   const today = new Date();
