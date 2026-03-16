@@ -1,8 +1,7 @@
 import api from './api';
 
-export const searchDonorApi = (donorId: string) => {
-  return api.get('/donations/search', { params: { donorId } });
-};
+export const searchDonorApi = (query: string) =>
+  api.get('/donations/search', { params: { query } });
 
 export const markDonationApi = (data: {
   donorId: string;

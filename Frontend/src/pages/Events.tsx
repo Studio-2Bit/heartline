@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Search, Filter } from 'lucide-react';
+import { DashboardLayout } from '../layouts/DashboardLayout';
 import { MainLayout } from '../layouts/MainLayout';
 import { PageWrapper } from '../components/PageWrapper';
 import { EventCard } from '../components/EventCard';
@@ -52,7 +53,8 @@ export const Events = () => {
   );
 
   return (
-    <MainLayout>
+    <DashboardLayout>
+  
       <PageWrapper>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="mb-8">
@@ -114,6 +116,7 @@ export const Events = () => {
           )}
         </div>
       </PageWrapper>
-    </MainLayout>
+   
+    </DashboardLayout>
   );
 };

@@ -143,7 +143,7 @@ export default function DonorMark() {
             <h2 className="text-2xl font-bold text-gray-900 mb-6">Search Donor</h2>
             <form onSubmit={handleSearch} className="space-y-4">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Donor ID</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-2"> Search donor</label>
                 <div className="relative">
                   <input
                     type="text"
@@ -153,7 +153,7 @@ export default function DonorMark() {
                       setNotFound(false);
                       setSearchError('');
                     }}
-                    placeholder="Enter donor's MongoDB ID..."
+                    placeholder="Enter donor name or email..."
                     className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-red-600 focus:outline-none transition"
                   />
                   <Search className="absolute right-3 top-3.5 w-5 h-5 text-gray-400" />
