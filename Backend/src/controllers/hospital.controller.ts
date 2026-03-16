@@ -9,10 +9,14 @@ export const completeProfile = async (req: Request, res: Response) => {
     const userId = (req as any).user.id;
     const { hospitalName, location, phone, registrationNumber, approvalNumber, latitude, longitude } = req.body;
 
-    // Check if profile already exists
+    // If profile already exists — return success instead of error
     const existing = await HospitalProfile.findOne({ userId });
     if (existing) {
-      return res.status(400).json({ message: 'Profile already completed' });
+      await User.findByIdAndUpdate(userId, { profileCompleted: true });
+      return res.status(200).json({
+        message: 'Hospital profile submitted for review',
+        profile: existing,
+      });
     }
 
     const profile = await HospitalProfile.create({
@@ -33,7 +37,8 @@ export const completeProfile = async (req: Request, res: Response) => {
       profile,
     });
   } catch (error: any) {
-    return res.status(500).json({ message: 'Server error', error: error.message });
+  console.error('completeProfile error:', error);  // ← already there
+  return res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
 
