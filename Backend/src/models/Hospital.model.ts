@@ -5,6 +5,8 @@ export interface IHospitalProfile extends Document {
   userId: mongoose.Types.ObjectId;
   hospitalName: string;
   location: string;
+  latitude: number | null;
+   longitude: number | null;
   phone: string;
   registrationNumber: string;
   approvalNumber: string;
@@ -33,6 +35,11 @@ const HospitalProfileSchema = new Schema<IHospitalProfile>(
       type: String,
       required: true,
     },
+
+    latitude: { type: Number, default: null },
+
+     longitude: { type: Number, default: null },
+
     phone: {
       type: String,
       required: true,

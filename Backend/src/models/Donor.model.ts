@@ -3,6 +3,8 @@ import mongoose, { Schema, Document } from 'mongoose';
 export interface IDonorProfile extends Document {
   userId: mongoose.Types.ObjectId;
   location: string;
+   latitude: number | null;
+   longitude: number | null;
   phone: string;
   bloodType: string;
   registrationNumber?: string;
@@ -27,6 +29,9 @@ const DonorProfileSchema = new Schema<IDonorProfile>(
       type: String,
       required: true,
     },
+    latitude: { type: Number, default: null },  
+
+    longitude: { type: Number, default: null }, 
     phone: {
       type: String,
       required: true,
@@ -61,6 +66,7 @@ const DonorProfileSchema = new Schema<IDonorProfile>(
       type: Number,
       default: 0,
     },
+
   },
   { timestamps: true }
 );

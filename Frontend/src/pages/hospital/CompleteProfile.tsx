@@ -1,39 +1,84 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CheckCircle, ChevronRight } from 'lucide-react';
+import { CheckCircle, ChevronRight, MapPin, Loader } from 'lucide-react';
 import { MainLayout } from '../../layouts/MainLayout';
 import { PageWrapper } from '../../components/PageWrapper';
 import { FormInput } from '../../components/FormInput';
-import { useAuth } from '../../context/AuthContext';
+import api from '../../services/api';
 
 export const HospitalCompleteProfile = () => {
   const [step, setStep] = useState(1);
-  const { updateProfile } = useAuth();
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+  const [isGettingLocation, setIsGettingLocation] = useState(false);
+  const [locationDetected, setLocationDetected] = useState(false);
+  const [error, setError] = useState('');
+
   const [formData, setFormData] = useState({
     hospitalName: '',
     location: '',
     phone: '',
     registrationNumber: '',
-    approvalNumber: ''
+    approvalNumber: '',
+    latitude: null as number | null,
+    longitude: null as number | null,
   });
+
+  const handleGetLocation = () => {
+    if (!navigator.geolocation) {
+      alert('GPS not supported by your browser');
+      return;
+    }
+    setIsGettingLocation(true);
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setFormData((prev) => ({
+          ...prev,
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        }));
+        setLocationDetected(true);
+        setIsGettingLocation(false);
+      },
+      () => {
+        alert('Could not get location. Please allow location access.');
+        setIsGettingLocation(false);
+      }
+    );
+  };
 
   const handleNext = () => {
     if (step < 2) {
       setStep(step + 1);
     } else {
-      updateProfile({
-        ...formData,
-        profileCompleted: true,
-        verified: false
-      });
-      navigate('/hospital/dashboard');
+      handleSubmit();
     }
   };
 
   const handleBack = () => {
-    if (step > 1) {
-      setStep(step - 1);
+    if (step > 1) setStep(step - 1);
+  };
+
+  const handleSubmit = async () => {
+    setIsLoading(true);
+    setError('');
+    try {
+      await api.post('/hospital/profile/complete', {
+        hospitalName: formData.hospitalName,
+        location: formData.location,
+        phone: formData.phone,
+        registrationNumber: formData.registrationNumber,
+        approvalNumber: formData.approvalNumber,
+        ...(formData.latitude && { latitude: formData.latitude }),
+        ...(formData.longitude && { longitude: formData.longitude }),
+      });
+
+      navigate('/hospital/dashboard');
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Failed to complete profile');
+      setStep(1);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -47,6 +92,7 @@ export const HospitalCompleteProfile = () => {
               <p className="text-gray-600">Provide your hospital details for verification</p>
             </div>
 
+            {/* Stepper */}
             <div className="mb-8">
               <div className="flex items-center justify-between">
                 {[1, 2].map((s) => (
@@ -57,9 +103,7 @@ export const HospitalCompleteProfile = () => {
                       {step > s ? <CheckCircle className="h-6 w-6" /> : s}
                     </div>
                     {s < 2 && (
-                      <div className={`flex-1 h-1 mx-2 ${
-                        step > s ? 'bg-red-600' : 'bg-gray-200'
-                      }`} />
+                      <div className={`flex-1 h-1 mx-2 ${step > s ? 'bg-red-600' : 'bg-gray-200'}`} />
                     )}
                   </div>
                 ))}
@@ -70,7 +114,15 @@ export const HospitalCompleteProfile = () => {
               </div>
             </div>
 
+            {/* Error */}
+            {error && (
+              <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+                <p className="text-red-700 text-sm">{error}</p>
+              </div>
+            )}
+
             <div className="mb-8">
+              {/* Step 1 — Basic Details */}
               {step === 1 && (
                 <div>
                   <h2 className="text-xl font-bold text-gray-800 mb-4">Hospital Information</h2>
@@ -82,25 +134,54 @@ export const HospitalCompleteProfile = () => {
                     placeholder="Official hospital name"
                     required
                   />
-                  <FormInput
-                    label="Location"
-                    type="text"
-                    value={formData.location}
-                    onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                    placeholder="City, State"
-                    required
-                  />
+
+                  {/* Location + GPS */}
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Location <span className="text-red-600">*</span>
+                    </label>
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        value={formData.location}
+                        onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                        placeholder="City, District"
+                        required
+                        className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition"
+                      />
+                      <button
+                        type="button"
+                        onClick={handleGetLocation}
+                        disabled={isGettingLocation}
+                        className="flex items-center gap-2 px-4 py-2 bg-red-50 border border-red-200 text-red-600 rounded-lg hover:bg-red-100 transition disabled:opacity-50 whitespace-nowrap"
+                      >
+                        {isGettingLocation
+                          ? <Loader className="h-4 w-4 animate-spin" />
+                          : <MapPin className="h-4 w-4" />
+                        }
+                        {isGettingLocation ? 'Getting...' : 'Use GPS'}
+                      </button>
+                    </div>
+                    {locationDetected && (
+                      <p className="text-green-600 text-xs mt-1 flex items-center gap-1">
+                        <CheckCircle className="h-3 w-3" />
+                        GPS coordinates detected — distance matching enabled
+                      </p>
+                    )}
+                  </div>
+
                   <FormInput
                     label="Contact Phone"
                     type="tel"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    placeholder="+1 (555) 123-4567"
+                    placeholder="+94 11 000 0000"
                     required
                   />
                 </div>
               )}
 
+              {/* Step 2 — Registration */}
               {step === 2 && (
                 <div>
                   <h2 className="text-xl font-bold text-gray-800 mb-4">Registration Details</h2>
@@ -132,6 +213,7 @@ export const HospitalCompleteProfile = () => {
               )}
             </div>
 
+            {/* Buttons */}
             <div className="flex space-x-4">
               {step > 1 && (
                 <button
@@ -143,9 +225,10 @@ export const HospitalCompleteProfile = () => {
               )}
               <button
                 onClick={handleNext}
-                className="flex-1 bg-red-600 text-white py-3 rounded-lg hover:bg-red-700 transition flex items-center justify-center space-x-2"
+                disabled={isLoading}
+                className="flex-1 bg-red-600 text-white py-3 rounded-lg hover:bg-red-700 transition flex items-center justify-center space-x-2 disabled:bg-gray-400"
               >
-                <span>{step === 2 ? 'Submit for Review' : 'Continue'}</span>
+                <span>{isLoading ? 'Submitting...' : step === 2 ? 'Submit for Review' : 'Continue'}</span>
                 <ChevronRight className="h-5 w-5" />
               </button>
             </div>

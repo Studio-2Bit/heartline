@@ -126,3 +126,26 @@ export const completeProfile = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Profile update failed', error: err.message });
   }
 };
+
+// PUT /api/auth/update-password
+export const updatePassword = async (req: Request, res: Response) => {
+  try {
+    const userId = (req as any).user.id;
+    const { currentPassword, newPassword } = req.body;
+
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    // Check current password is correct
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch) return res.status(400).json({ message: 'Current password is incorrect' });
+
+    // Hash new password and save
+    user.password = await bcrypt.hash(newPassword, 10);
+    await user.save();
+
+    return res.status(200).json({ message: 'Password updated successfully' });
+  } catch (error: any) {
+    return res.status(500).json({ message: 'Failed to update password', error: error.message });
+  }
+};

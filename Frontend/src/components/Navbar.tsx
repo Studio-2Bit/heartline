@@ -48,32 +48,7 @@ export const Navbar = () => {
               </>
             ) : (
               <>
-                <Link
-                  to={getDashboardLink()}
-                  className="text-gray-700 hover:text-red-600 transition"
-                >
-                  Dashboard
-                </Link>
-                <Link to="/events" className="text-gray-700 hover:text-red-600 transition">
-                  Events
-                </Link>
-                {user.role === 'donor' ? (
-                  <Link to="/donor/requests" className="text-gray-700 hover:text-red-600 transition">
-                    Requests
-                  </Link>
-                ) : (
-                  <>
-                    <Link to="/hospital/create-request" className="text-gray-700 hover:text-red-600 transition">
-                      Create Request
-                    </Link>
-                    <Link
-                      to="/hospital/BloodRequest"
-                      className="text-gray-700 hover:text-red-600 transition"
-                    >
-                      Blood Requests
-                    </Link>
-                  </>
-                )}
+                
                 <NotificationBell />
                 <div className="relative group">
                   <button className="flex items-center space-x-2 text-gray-700 hover:text-red-600 transition">
@@ -82,7 +57,7 @@ export const Navbar = () => {
                   </button>
                   <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
                     <Link
-                      to={user.role === 'donor' ? '/donor/profile' : '/hospital/dashboard'}
+                      to={user.role === 'donor' ? '/donor/profile' : '/hospital/Profile'}
                       className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50"
                     >
                       <User className="h-4 w-4 mr-2" />
@@ -110,106 +85,7 @@ export const Navbar = () => {
         </div>
       </div>
 
-      {isOpen && (
-        <div className="md:hidden bg-white border-t border-gray-200">
-          <div className="px-4 py-2 space-y-2">
-            {!user ? (
-              <>
-                <Link
-                  to="/"
-                  className="block py-2 text-gray-700 hover:text-red-600"
-                  onClick={() => setIsOpen(false)}
-                >
-                  Home
-                </Link>
-                <Link
-                  to="/events"
-                  className="block py-2 text-gray-700 hover:text-red-600"
-                  onClick={() => setIsOpen(false)}
-                >
-                  Events
-                </Link>
-                <Link
-                  to="/auth"
-                  className="block bg-red-600 text-white px-4 py-2 rounded-lg text-center"
-                  onClick={() => setIsOpen(false)}
-                >
-                  Get Started
-                </Link>
-              </>
-            ) : (
-              <>
-                <Link
-                  to={getDashboardLink()}
-                  className="block py-2 text-gray-700 hover:text-red-600"
-                  onClick={() => setIsOpen(false)}
-                >
-                  Dashboard
-                </Link>
-                <Link
-                  to="/events"
-                  className="block py-2 text-gray-700 hover:text-red-600"
-                  onClick={() => setIsOpen(false)}
-                >
-                  Events
-                </Link>
-                {user.role === 'donor' ? (
-                  <Link
-                    to="/donor/requests"
-                    className="block py-2 text-gray-700 hover:text-red-600"
-                    onClick={() => setIsOpen(false)}
-                  >
-                    Requests
-                  </Link>
-                ) : (
-                  <><Link
-                        to="/hospital/create-request"
-                        className="block py-2 text-gray-700 hover:text-red-600"
-                        onClick={() => setIsOpen(false)}
-                      >
-                        Create Request
-                      </Link>
-                      <Link
-                        to="/hospital/BloodRequest"
-                        className="block py-2 text-gray-700 hover:text-red-600"
-                        onClick={() => setIsOpen(false)}
-                      >
-                          Blood Requests
-                        </Link></>
-
-
-                )}
-                <Link
-                  to="/notifications"
-                  className="block py-2 text-gray-700 hover:text-red-600"
-                  onClick={() => setIsOpen(false)}
-                >
-                  <div className="flex items-center">
-                    <BellIcon className="h-4 w-4 mr-2" />
-                    Notifications
-                  </div>
-                </Link>
-                <Link
-                  to={user.role === 'donor' ? '/donor/profile' : '/hospital/dashboard'}
-                  className="block py-2 text-gray-700 hover:text-red-600"
-                  onClick={() => setIsOpen(false)}
-                >
-                  Profile
-                </Link>
-                <button
-                  onClick={() => {
-                    handleLogout();
-                    setIsOpen(false);
-                  }}
-                  className="block w-full text-left py-2 text-gray-700 hover:text-red-600"
-                >
-                  Logout
-                </button>
-              </>
-            )}
-          </div>
-        </div>
-      )}
+      
     </nav>
   );
 };

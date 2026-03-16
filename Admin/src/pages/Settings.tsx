@@ -1,52 +1,110 @@
 import { useState } from 'react';
-import { Save, Bell, Shield, Mail, Database, Globe } from 'lucide-react';
+import { Save, Bell, Shield, Download, Loader } from 'lucide-react';
+import axios from 'axios';
+
+const API = 'http://localhost:5000/api/admin';
+const authHeaders = () => ({
+  headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+});
 
 export default function Settings() {
-  const [emailNotifications, setEmailNotifications] = useState(true);
-  const [pushNotifications, setPushNotifications] = useState(true);
   const [weeklyReports, setWeeklyReports] = useState(false);
-  const [twoFactorAuth, setTwoFactorAuth] = useState(false);
   const [autoApproval, setAutoApproval] = useState(false);
-  const [maintenanceMode, setMaintenanceMode] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
 
-  // Add Admin section states
+  // Add Admin states
   const [showPasswordInput, setShowPasswordInput] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
-  const [enteredPassword, setEnteredPassword] = useState("");
-  const [newAdminEmail, setNewAdminEmail] = useState("");
-  const [notification, setNotification] = useState(""); // For Add Admin messages
-  const [saveNotification, setSaveNotification] = useState(""); // For Save button
+  const [enteredPassword, setEnteredPassword] = useState('');
+  const [newAdminEmail, setNewAdminEmail] = useState('');
+  const [adminNotification, setAdminNotification] = useState('');
+  const [saveNotification, setSaveNotification] = useState('');
 
-  const currentPassword = "123456"; // Replace with actual password check
-
-  const handleVerify = () => {
-    if (enteredPassword === currentPassword) {
+  const handleVerify = async () => {
+    try {
+      await axios.post(`${API}/verify-password`, { password: enteredPassword }, authHeaders());
       setIsVerified(true);
-      setNotification("✅ Password verified!");
-    } else {
-      setNotification("❌ Incorrect password. Try again.");
+      setAdminNotification('✅ Password verified!');
+    } catch {
+      setAdminNotification('❌ Incorrect password. Try again.');
     }
   };
 
-  const handleAddAdmin = () => {
-    if (newAdminEmail) {
-      setNotification(`✅ New admin added: ${newAdminEmail}`);
-      // Reset Add Admin section after 2 seconds
+  const handleAddAdmin = async () => {
+    if (!newAdminEmail) {
+      setAdminNotification('❌ Enter an email to add admin');
+      return;
+    }
+    try {
+      await axios.post(`${API}/add-admin`, { email: newAdminEmail }, authHeaders());
+      setAdminNotification(`✅ New admin added: ${newAdminEmail}`);
       setTimeout(() => {
         setShowPasswordInput(false);
         setIsVerified(false);
-        setEnteredPassword("");
-        setNewAdminEmail("");
-        setNotification("");
+        setEnteredPassword('');
+        setNewAdminEmail('');
+        setAdminNotification('');
       }, 2000);
-    } else {
-      setNotification("❌ Enter an email to add admin");
+    } catch (err: any) {
+      setAdminNotification(err.response?.data?.message || '❌ Failed to add admin');
+    }
+  };
+
+  const [showPwForm, setShowPwForm] = useState(false);
+const [pwData, setPwData] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
+const [pwMessage, setPwMessage] = useState('');
+
+const handleUpdatePassword = async () => {
+  if (pwData.newPassword !== pwData.confirmPassword) {
+    setPwMessage('❌ Passwords do not match');
+    return;
+  }
+  try {
+    await axios.put('http://localhost:5000/api/auth/update-password', {
+      currentPassword: pwData.currentPassword,
+      newPassword: pwData.newPassword,
+    }, authHeaders());
+    setPwMessage('✅ Password updated successfully!');
+    setTimeout(() => { setShowPwForm(false); setPwMessage(''); }, 2000);
+  } catch (err: any) {
+    setPwMessage(`❌ ${err.response?.data?.message || 'Failed to update password'}`);
+  }
+};
+
+  const handleDownloadReport = async () => {
+    setIsDownloading(true);
+    try {
+      const { data } = await axios.get(`${API}/logs`, authHeaders());
+      const logs = data.logs;
+
+      // Build CSV
+      const headers = ['Type', 'Action', 'User', 'Details', 'Timestamp'];
+      const rows = logs.map((l: any) => [
+        l.type,
+        l.action,
+        l.user,
+        `"${l.details.replace(/"/g, "'")}"`,
+        new Date(l.createdAt).toLocaleString(),
+      ]);
+
+      const csv = [headers, ...rows].map((r) => r.join(',')).join('\n');
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `weekly-report-${new Date().toISOString().slice(0, 10)}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch {
+      alert('Failed to download report');
+    } finally {
+      setIsDownloading(false);
     }
   };
 
   const handleSave = () => {
-    setSaveNotification("💾 Settings saved successfully!");
-    setTimeout(() => setSaveNotification(""), 3000); // Hide after 3 sec
+    setSaveNotification('💾 Settings saved successfully!');
+    setTimeout(() => setSaveNotification(''), 3000);
   };
 
   return (
@@ -57,45 +115,39 @@ export default function Settings() {
       </div>
 
       <div className="space-y-6">
-        {/* Notifications Section */}
+
+        
         <div className="bg-white rounded-xl shadow-md p-6">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="p-2 bg-red-100 rounded-lg">
-              <Bell className="text-red-600" size={24} />
-            </div>
-            <div>
-              <h2 className="text-xl font-bold text-gray-900">Notifications</h2>
-              <p className="text-sm text-gray-600">Configure how you receive notifications</p>
-            </div>
+          <div className="flex items-center gap-3 mb-1">
           </div>
 
           <div className="space-y-4">
-            
+           
 
-            
-
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-              <div>
-                <h3 className="font-semibold text-gray-900">Weekly Reports</h3>
-                <p className="text-sm text-gray-600">Receive weekly summary reports</p>
-              </div>
+            {/* Download Weekly Report */}
+            <div className="p-4 bg-gray-50 rounded-lg">
+              <h3 className="font-semibold text-gray-900 mb-1">Download Weekly Report</h3>
+              <p className="text-sm text-gray-600 mb-3">
+                Download a CSV file containing all system logs and activity records
+              </p>
               <button
-                onClick={() => setWeeklyReports(!weeklyReports)}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  weeklyReports ? 'bg-red-600' : 'bg-gray-300'
-                }`}
+                onClick={handleDownloadReport}
+                disabled={isDownloading}
+                className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors disabled:bg-gray-400"
               >
-                <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    weeklyReports ? 'translate-x-6' : 'translate-x-1'
-                  }`}
-                />
+                {isDownloading
+                  ? <><Loader className="h-4 w-4 animate-spin" /><span>Preparing...</span></>
+                  : <><Download size={18} /><span>Download Report</span></>
+                }
               </button>
+              <p className="text-xs text-gray-400 mt-2">
+                Includes: log type, action, user, details, and timestamps
+              </p>
             </div>
           </div>
         </div>
 
-        {/* Security Section */}
+        {/* Security */}
         <div className="bg-white rounded-xl shadow-md p-6">
           <div className="flex items-center gap-3 mb-6">
             <div className="p-2 bg-gray-100 rounded-lg">
@@ -108,35 +160,50 @@ export default function Settings() {
           </div>
 
           <div className="space-y-4">
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-              <div>
-                <h3 className="font-semibold text-gray-900">Two-Factor Authentication</h3>
-                <p className="text-sm text-gray-600">Add an extra layer of security</p>
-              </div>
-              <button
-                onClick={() => setTwoFactorAuth(!twoFactorAuth)}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  twoFactorAuth ? 'bg-red-600' : 'bg-gray-300'
-                }`}
-              >
-                <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    twoFactorAuth ? 'translate-x-6' : 'translate-x-1'
-                  }`}
-                />
-              </button>
-            </div>
-
             <div className="p-4 bg-gray-50 rounded-lg">
-              <h3 className="font-semibold text-gray-900 mb-2">Change Password</h3>
-              <button className="px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors">
-                Update Password
-              </button>
-            </div>
+  <h3 className="font-semibold text-gray-900 mb-2">Change Password</h3>
+  {!showPwForm ? (
+    <button
+      onClick={() => setShowPwForm(true)}
+      className="px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors"
+    >
+      Update Password
+    </button>
+  ) : (
+    <div className="space-y-2 max-w-sm">
+      <input type="password" placeholder="Current password"
+        value={pwData.currentPassword}
+        onChange={(e) => setPwData({ ...pwData, currentPassword: e.target.value })}
+        className="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-red-500"
+      />
+      <input type="password" placeholder="New password"
+        value={pwData.newPassword}
+        onChange={(e) => setPwData({ ...pwData, newPassword: e.target.value })}
+        className="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-red-500"
+      />
+      <input type="password" placeholder="Confirm new password"
+        value={pwData.confirmPassword}
+        onChange={(e) => setPwData({ ...pwData, confirmPassword: e.target.value })}
+        className="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-red-500"
+      />
+      <div className="flex gap-2">
+        <button onClick={handleUpdatePassword}
+          className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
+          Update
+        </button>
+        <button onClick={() => { setShowPwForm(false); setPwMessage(''); }}
+          className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+          Cancel
+        </button>
+      </div>
+      {pwMessage && <p className="text-sm text-gray-700">{pwMessage}</p>}
+    </div>
+  )}
+</div>
 
-            {/* Add New Admin Section */}
+            {/* Add New Admin */}
             <div className="p-4 bg-gray-50 rounded-lg">
-              <h3 className="font-semibold text-gray-900 mb-2">Add new Admin</h3>
+              <h3 className="font-semibold text-gray-900 mb-1">Add New Admin</h3>
               <p className="text-sm text-gray-600 mb-3">Add new administrator accounts to manage the system</p>
 
               {!showPasswordInput && !isVerified && (
@@ -149,54 +216,47 @@ export default function Settings() {
               )}
 
               {showPasswordInput && !isVerified && (
-                <div className="space-y-2">
+                <div className="space-y-2 max-w-sm">
                   <input
                     type="password"
                     placeholder="Enter your password"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none mb-1"
                     value={enteredPassword}
                     onChange={(e) => setEnteredPassword(e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 outline-none"
                   />
                   <button
                     onClick={handleVerify}
-                    className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+                    className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
                   >
                     Verify
                   </button>
-                  {notification && (
-                    <p className="mt-1 text-sm text-gray-700">{notification}</p>
-                  )}
+                  {adminNotification && <p className="text-sm text-gray-700">{adminNotification}</p>}
                 </div>
               )}
 
               {isVerified && (
-                <div className="space-y-2">
+                <div className="space-y-2 max-w-sm">
                   <input
                     type="email"
                     placeholder="Enter new admin email"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none mb-1"
                     value={newAdminEmail}
                     onChange={(e) => setNewAdminEmail(e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 outline-none"
                   />
                   <button
                     onClick={handleAddAdmin}
-                    className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
+                    className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
                   >
-                    Add
+                    Add Admin
                   </button>
-                  {notification && (
-                    <p className="mt-1 text-sm text-gray-700">{notification}</p>
-                  )}
+                  {adminNotification && <p className="text-sm text-gray-700">{adminNotification}</p>}
                 </div>
               )}
             </div>
           </div>
         </div>
 
-        {/* System Settings Section */}
-        {/* ...rest of your sections remain unchanged... */}
-
-        {/* Save / Cancel Buttons */}
+        {/* Save */}
         <div className="flex justify-end gap-3">
           <button className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
             Cancel
@@ -209,11 +269,10 @@ export default function Settings() {
               <Save size={20} />
               Save Changes
             </button>
-            {saveNotification && (
-              <p className="mt-1 text-sm text-gray-700">{saveNotification}</p>
-            )}
+            {saveNotification && <p className="mt-1 text-sm text-gray-700">{saveNotification}</p>}
           </div>
         </div>
+
       </div>
     </div>
   );

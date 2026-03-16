@@ -16,7 +16,9 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     { path: '/donor/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { path: '/donor/requests', label: 'Blood Requests', icon: FileText },
     { path: '/events', label: 'Events', icon: Calendar },
-    { path: '/donor/leaderboard', label: 'Leader Board', icon: User }
+    { path: '/donor/leaderboard', label: 'Leader Board', icon: User },
+     { path: '/donor/RecentActivity', label: 'Recent Activity', icon: User }
+
   ];
 
   const hospitalLinks = [
@@ -24,7 +26,8 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     { path: '/hospital/create-request', label: 'Create Request', icon: Plus },
      { path: '/hospital/donorMark', label: 'Mark donors', icon: User },
     { path: '/hospital/events', label: 'My Events', icon: List },
-    { path: '/events', label: 'All Events', icon: Calendar }
+    { path: '/events', label: 'All Events', icon: Calendar },
+    { path: '/hospital/BloodRequest', label: 'Blood Requests', icon: List },
   ];
 
   const links = user?.role === 'donor' ? donorLinks : hospitalLinks;

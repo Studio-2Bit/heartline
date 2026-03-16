@@ -7,6 +7,8 @@ export interface IUser extends Document {
   role: 'donor' | 'hospital' | 'admin';
   isVerified: boolean;
   profileCompleted: boolean;
+  createdAt: Date;  
+  updatedAt: Date;
 }
 
 const UserSchema = new Schema<IUser>(

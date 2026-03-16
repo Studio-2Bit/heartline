@@ -7,11 +7,13 @@ import { EventDetails } from './pages/EventDetails';
 import { Notifications } from './pages/Notifications';
 import  EventRegister from './pages/EventRegister';
 import { DonorDashboard } from './pages/donor/DonorDashboard';
+import { DonorActivity } from './pages/donor/RecentActivity';
 import { DonorProfile } from './pages/donor/DonorProfile';
 import { DonorRequests } from './pages/donor/DonorRequests';
 import  DonorLeaderboard  from './pages/donor/donationLeaderboard';
 import { DonorCompleteProfile } from './pages/donor/CompleteProfile';
 import { HospitalDashboard } from './pages/hospital/HospitalDashboard';
+import { HospitalProfile } from './pages/hospital/HospitalProfile';
 import { CreateRequest } from './pages/hospital/CreateRequest';
 import  { BloodRequestHistory } from './pages/hospital/BloodRequest'; 
 import  DonorMark from './pages/hospital/donorMark';
@@ -107,6 +109,16 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
+
+      <Route
+        path="/donor/RecentActivity"
+        element={
+          <ProtectedRoute allowedRole="donor">
+            <DonorActivity />
+          </ProtectedRoute>
+        }
+      />
+
       <Route
         path="/donor/profile"
         element={
@@ -140,6 +152,16 @@ function AppRoutes() {
           </ProfileCompletionRoute>
         }
       />
+
+      <Route
+        path="/hospital/Profile"
+        element={
+          <ProtectedRoute allowedRole="hospital">
+            <HospitalProfile />
+          </ProtectedRoute>
+        }
+      />
+
       <Route
         path="/hospital/dashboard"
         element={
