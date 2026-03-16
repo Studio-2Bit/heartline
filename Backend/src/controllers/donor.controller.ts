@@ -4,6 +4,7 @@ import User from '../models/User.model';
 import mongoose from 'mongoose';
 import { createNotification } from '../utils/notify';
 import { sendSMS } from '../utils/sms';
+import { uploadToCloudinary } from '../config/cloudinary';
 
 
 // POST /api/donor/profile/complete
@@ -12,11 +13,28 @@ export const completeProfile = async (req: Request, res: Response) => {
     const userId = (req as any).user.id;
     const { location, phone, bloodType, registrationNumber, latitude, longitude } = req.body;
 
-    const idProof = req.file ? req.file.filename : undefined;
+    
+    
+
+    // Try Cloudinary upload — skip if it fails
+    let idProof: string | undefined;
+    if (req.file) {
+      try {
+        idProof = await uploadToCloudinary(req.file.buffer, `idproof-${Date.now()}`);
+        console.log('Cloudinary upload success:', idProof);
+      } catch (uploadError) {
+        console.error('Cloudinary upload failed:', uploadError);
+        
+      }
+    }
 
     const existing = await DonorProfile.findOne({ userId });
     if (existing) {
-      return res.status(400).json({ message: 'Profile already completed' });
+      await User.findByIdAndUpdate(userId, { profileCompleted: true });
+      return res.status(200).json({
+        message: 'Profile completed successfully',
+        profile: existing,
+      });
     }
 
     const profile = await DonorProfile.create({
@@ -37,6 +55,7 @@ export const completeProfile = async (req: Request, res: Response) => {
       profile,
     });
   } catch (error) {
+    console.error('completeProfile error:', error);
     return res.status(500).json({ message: 'Server error', error });
   }
 };
@@ -50,34 +69,32 @@ export const getProfile = async (req: Request, res: Response) => {
     if (!profile) {
       return res.status(404).json({ message: 'Profile not found' });
     }
-const today = new Date();
-if (
-  profile.availabilityStatus === 'unavailable' &&
-  profile.nextEligibleDate &&
-  new Date(profile.nextEligibleDate) <= today
-) {
-  await DonorProfile.findOneAndUpdate({ userId }, { availabilityStatus: 'available' });
-  await createNotification(
-    userId,
-    'success',
-    'You Are Available to Donate Again! 🩸',
-    'Your 90-day waiting period is over. You can now donate blood again.'
-  );
-}
-await DonorProfile.findOneAndUpdate({ userId }, { availabilityStatus: 'available' });
 
-await createNotification(userId, 'success',
-  'You Can Donate Again! 🩸',
-  'Your 90-day waiting period is over.'
-);
+    // Check if donor is eligible to donate again
+    const today = new Date();
+    if (
+      profile.availabilityStatus === 'unavailable' &&
+      profile.nextEligibleDate &&
+      new Date(profile.nextEligibleDate) <= today
+    ) {
+      await DonorProfile.findOneAndUpdate({ userId }, { availabilityStatus: 'available' });
 
-await sendSMS(
-  profile.phone,
-  `Heartline: Your 90-day waiting period is over. You are now eligible to donate blood again!`
-);
+      await createNotification(
+        userId,
+        'success',
+        'You Can Donate Again! 🩸',
+        'Your 90-day waiting period is over. You are now eligible to donate blood again.'
+      );
+
+      if (profile.phone) {
+        await sendSMS(
+          profile.phone,
+          `Heartline: Your 90-day waiting period is over. You are now eligible to donate blood again!`
+        );
+      }
+    }
+
     return res.status(200).json({ profile });
-    
-    
   } catch (error) {
     return res.status(500).json({ message: 'Server error', error });
   }
@@ -89,7 +106,11 @@ export const updateProfile = async (req: Request, res: Response) => {
     const userId = (req as any).user.id;
     const { location, phone, bloodType, registrationNumber, latitude, longitude } = req.body;
 
-    const idProof = req.file ? req.file.filename : undefined;
+    // Upload to Cloudinary if file exists
+    let idProof: string | undefined;
+    if (req.file) {
+      idProof = await uploadToCloudinary(req.file.buffer, `idproof-${Date.now()}`);
+    }
 
     const updateData: any = { location, phone, bloodType, registrationNumber };
     if (idProof) updateData.idProof = idProof;
@@ -107,7 +128,6 @@ export const updateProfile = async (req: Request, res: Response) => {
     }
 
     return res.status(200).json({ message: 'Profile updated', profile });
-    
   } catch (error) {
     return res.status(500).json({ message: 'Server error', error });
   }

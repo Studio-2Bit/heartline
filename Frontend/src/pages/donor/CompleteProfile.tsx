@@ -7,8 +7,10 @@ import { FormInput } from '../../components/FormInput';
 import { UploadBox } from '../../components/UploadBox';
 import { bloodTypes } from '../../utils/helpers';
 import api from '../../services/api';
+import { useAuth } from '../../context/AuthContext';
 
 export const DonorCompleteProfile = () => {
+  const { markProfileCompleted } = useAuth(); 
   const [step, setStep] = useState(1);
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
@@ -78,7 +80,8 @@ export const DonorCompleteProfile = () => {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 
-      navigate('/donor/dashboard');
+      markProfileCompleted(); // ← now uses the one declared at top
+      navigate('/pending-verification');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to complete profile');
       setStep(1);
@@ -128,12 +131,10 @@ export const DonorCompleteProfile = () => {
             )}
 
             <div className="mb-8">
-              {/* Step 1 — Basic Info */}
+              {/* Step 1 */}
               {step === 1 && (
                 <div>
                   <h2 className="text-xl font-bold text-gray-800 mb-4">Basic Information</h2>
-
-                  {/* Location + GPS */}
                   <div className="mb-4">
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Location <span className="text-red-600">*</span>
@@ -153,10 +154,7 @@ export const DonorCompleteProfile = () => {
                         disabled={isGettingLocation}
                         className="flex items-center gap-2 px-4 py-2 bg-red-50 border border-red-200 text-red-600 rounded-lg hover:bg-red-100 transition disabled:opacity-50 whitespace-nowrap"
                       >
-                        {isGettingLocation
-                          ? <Loader className="h-4 w-4 animate-spin" />
-                          : <MapPin className="h-4 w-4" />
-                        }
+                        {isGettingLocation ? <Loader className="h-4 w-4 animate-spin" /> : <MapPin className="h-4 w-4" />}
                         {isGettingLocation ? 'Getting...' : 'Use GPS'}
                       </button>
                     </div>
@@ -167,7 +165,6 @@ export const DonorCompleteProfile = () => {
                       </p>
                     )}
                   </div>
-
                   <FormInput
                     label="Phone Number"
                     type="tel"
@@ -179,7 +176,7 @@ export const DonorCompleteProfile = () => {
                 </div>
               )}
 
-              {/* Step 2 — Medical Info */}
+              {/* Step 2 */}
               {step === 2 && (
                 <div>
                   <h2 className="text-xl font-bold text-gray-800 mb-4">Medical Information</h2>
@@ -209,7 +206,7 @@ export const DonorCompleteProfile = () => {
                 </div>
               )}
 
-              {/* Step 3 — Verification */}
+              {/* Step 3 */}
               {step === 3 && (
                 <div>
                   <h2 className="text-xl font-bold text-gray-800 mb-4">Verification</h2>
