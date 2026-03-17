@@ -52,7 +52,7 @@ const DonorProfileSchema = new Schema<IDonorProfile>(
     availabilityStatus: {
       type: String,
       enum: ['available', 'unavailable'],
-      default: 'unavailable',
+      default: 'available',
     },
     lastDonationDate: {
       type: Date,

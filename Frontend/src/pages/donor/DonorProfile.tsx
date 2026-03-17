@@ -207,12 +207,7 @@ export const DonorProfile = () => {
               <div className="bg-white rounded-xl shadow-md p-6">
                 <h3 className="font-semibold text-gray-800 mb-4">Profile Status</h3>
                 <div className="space-y-3">
-                  <div className={`flex items-center ${profile?.userId?.isVerified ? 'text-green-600' : 'text-gray-400'}`}>
-                    <CheckCircle className="h-5 w-5 mr-2" />
-                    <span className="text-sm">
-                      {profile?.userId?.isVerified ? 'Profile Verified' : 'Pending Verification'}
-                    </span>
-                  </div>
+                  
                   <div className="flex items-center text-green-600">
                     <CheckCircle className="h-5 w-5 mr-2" />
                     <span className="text-sm">Email Verified</span>
