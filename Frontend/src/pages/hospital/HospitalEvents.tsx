@@ -125,7 +125,7 @@ export const HospitalEvents = () => {
         {/* Active / Pending Events */}
         {!isLoading && (
           <div className="mb-8">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">Active & Pending Events</h2>
+            
             {activeEvents.length === 0 && (
               <div className="text-center py-12 bg-white rounded-xl shadow-md">
                 <p className="text-gray-500">No active events. Create one!</p>

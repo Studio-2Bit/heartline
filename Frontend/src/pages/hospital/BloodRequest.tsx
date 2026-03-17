@@ -190,8 +190,8 @@ export const BloodRequestHistory = () => {
           <DonorModal donor={selectedDonor} onClose={() => setSelectedDonor(null)} />
 
           <div className="mb-6">
-            <h1 className="text-3xl font-bold text-gray-800">Blood Request History</h1>
-            <p className="text-gray-600">Manage and track your blood donation requests</p>
+            
+            <p className="text-black-600 text-2xl font-bold">Manage and track your blood donation requests</p>
           </div>
 
           {/* Tabs */}

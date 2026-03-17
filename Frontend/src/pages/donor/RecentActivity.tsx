@@ -106,10 +106,7 @@ export const DonorActivity = () => {
       <PageWrapper>
         <div className="max-w-3xl mx-auto">
 
-          <div className="mb-6">
-            <h1 className="text-3xl font-bold text-gray-800">My Activity</h1>
-            <p className="text-gray-600">Track your blood request responses and event registrations</p>
-          </div>
+          
 
           {/* Tabs */}
           <div className="flex gap-3 mb-6">

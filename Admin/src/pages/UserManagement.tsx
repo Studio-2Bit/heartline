@@ -112,8 +112,8 @@ export default function UserManagement() {
           <Users size={24} className="text-white" />
         </div>
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">User Management</h1>
-          <p className="text-gray-500 text-sm mt-0.5">Manage donors & hospital accounts</p>
+          
+          <p className="text-black-500 text-2xl mt-0.5 font-bold">Manage donors & hospital accounts</p>
         </div>
       </div>
 
