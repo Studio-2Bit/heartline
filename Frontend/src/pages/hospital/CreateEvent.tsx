@@ -139,7 +139,7 @@ export const CreateEvent = () => {
                   type="tel"
                   value={formData.contactPhone}
                   onChange={(e) => setFormData({ ...formData, contactPhone: e.target.value })}
-                  placeholder="+1 (555) 123-4567"
+                  placeholder="+94 123-4567"
                   required
                 />
 
