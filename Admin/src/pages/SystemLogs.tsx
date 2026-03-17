@@ -77,8 +77,8 @@ export default function SystemLogs() {
     <div>
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">System Logs</h1>
-          <p className="text-gray-600">View all system activities and events</p>
+          
+          <p className="text-black-600 font-bold text-2xl">View all system activities and events</p>
         </div>
         <button
           onClick={handleExport}

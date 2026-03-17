@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Droplet, Trophy, Calendar, MapPin, TrendingUp, AlertCircle } from 'lucide-react';
+import { Droplet, Trophy, Calendar, TrendingUp, AlertCircle } from 'lucide-react';
 import { DashboardLayout } from '../../layouts/DashboardLayout';
 import api from '../../services/api';
 
@@ -207,7 +207,7 @@ export default function DonorLeaderboard() {
                   <div className="flex items-center justify-between">
                     <div>
                       <h2 className="text-2xl font-bold text-gray-900 mb-1">Your Donation Record</h2>
-                      <p className="text-gray-600 text-sm">Complete history of all your donations</p>
+                  
                     </div>
                     <div className="text-right">
                       <div className="text-3xl font-bold text-red-600">{donations.length}</div>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Droplet, Calendar, Bell, Edit, AlertCircle } from 'lucide-react';
+import { Droplet, Calendar, Edit, AlertCircle } from 'lucide-react';
 import { DashboardLayout } from '../../layouts/DashboardLayout';
 import { PageWrapper } from '../../components/PageWrapper';
 import { ProfileCard } from '../../components/ProfileCard';

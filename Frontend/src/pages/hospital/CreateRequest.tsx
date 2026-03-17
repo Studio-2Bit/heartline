@@ -48,8 +48,8 @@ export const CreateRequest = () => {
       <PageWrapper>
         <div className="max-w-3xl mx-auto">
           <div className="mb-6">
-            <h1 className="text-3xl font-bold text-gray-800">Create Blood Request</h1>
-            <p className="text-gray-600">Submit a new blood donation request</p>
+            
+            <p className="text-black-600 text-2xl font-bold">Submit a new blood donation request</p>
           </div>
 
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 flex items-start">
@@ -131,7 +131,7 @@ export const CreateRequest = () => {
                       type="tel"
                       value={formData.contactPhone}
                       onChange={(e) => setFormData({ ...formData, contactPhone: e.target.value })}
-                      placeholder="+1 (555) 123-4567"
+                      placeholder="+94 123-4567"
                       required
                     />
                   </div>

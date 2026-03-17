@@ -1,35 +1,10 @@
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Heart, Users, Award, Calendar, ArrowRight } from 'lucide-react';
 import { MainLayout } from '../layouts/MainLayout';
 import { PageWrapper } from '../components/PageWrapper';
 import { EventCard } from '../components/EventCard';
-
-const upcomingEvents = [
-  {
-    id: '1',
-    title: 'Community Blood Drive',
-    date: '2025-01-15T10:00:00',
-    location: 'City Community Center, Downtown',
-    hospital: 'City General Hospital',
-    description: 'Join us for our monthly community blood drive. Your donation can save up to 3 lives!'
-  },
-  {
-    id: '2',
-    title: 'Emergency Blood Donation Camp',
-    date: '2025-01-20T09:00:00',
-    location: 'Central Park Plaza',
-    hospital: 'Metropolitan Hospital',
-    description: 'Critical need for O+ and AB- blood types. Walk-ins welcome!'
-  },
-  {
-    id: '3',
-    title: 'Corporate Blood Donation Day',
-    date: '2025-01-25T11:00:00',
-    location: 'Tech Hub Convention Center',
-    hospital: 'University Medical Center',
-    description: 'Special corporate event with free health checkups for all donors.'
-  }
-];
+import api from '../services/api';
 
 const reasons = [
   {
@@ -49,21 +24,53 @@ const reasons = [
   }
 ];
 
+interface Event {
+  _id: string;
+  title: string;
+  date: string;
+  time: string;
+  location: string;
+  description: string;
+  hospitalId: {
+    _id: string;
+    name: string;
+  };
+}
+
 export const Home = () => {
   const navigate = useNavigate();
+  const [events, setEvents] = useState<Event[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    fetchEvents();
+  }, []);
+
+  const fetchEvents = async () => {
+    try {
+      const { data } = await api.get('/events');
+      setEvents(data.events.slice(0, 3));
+    } catch {
+      // silent fail
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <MainLayout>
       <PageWrapper>
+
+        {/* Hero */}
         <div
           className="relative bg-cover bg-center h-[600px] flex items-center"
           style={{
             backgroundImage: "url('https://images.pexels.com/photos/6823567/pexels-photo-6823567.jpeg?auto=compress&cs=tinysrgb&w=1920')"
           }}
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-red-900/90 to-red-600/70"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-red-900/90 to-red-600/70" />
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-white">
-            <h1 className="text-5xl md:text-6xl font-bold mb-6 animate-fade-in">
+            <h1 className="text-5xl md:text-6xl font-bold mb-6">
               Smart Blood Donation Network
             </h1>
             <p className="text-xl md:text-2xl mb-8 max-w-2xl">
@@ -80,6 +87,8 @@ export const Home = () => {
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+
+          {/* Why Donate */}
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold text-gray-800 mb-4">Why Donate Blood?</h2>
             <p className="text-xl text-gray-600">Every donation makes a difference</p>
@@ -103,6 +112,7 @@ export const Home = () => {
             })}
           </div>
 
+          {/* Upcoming Events */}
           <div className="mb-16">
             <div className="flex items-center justify-between mb-8">
               <div>
@@ -118,11 +128,43 @@ export const Home = () => {
               </button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {upcomingEvents.map((event) => (
-                <EventCard key={event.id} {...event} />
-              ))}
-            </div>
+            {/* Loading skeletons */}
+            {isLoading && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="bg-white rounded-xl shadow-lg p-6 animate-pulse">
+                    <div className="h-4 bg-gray-200 rounded w-3/4 mb-4" />
+                    <div className="h-3 bg-gray-200 rounded w-1/2 mb-2" />
+                    <div className="h-3 bg-gray-200 rounded w-2/3" />
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Empty state */}
+            {!isLoading && events.length === 0 && (
+              <div className="text-center py-12 bg-white rounded-xl shadow-md">
+                <Calendar className="h-12 w-12 text-gray-300 mx-auto mb-3" />
+                <p className="text-gray-500">No upcoming events right now</p>
+              </div>
+            )}
+
+            {/* Events grid */}
+            {!isLoading && events.length > 0 && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {events.map((event) => (
+                  <EventCard
+                    key={event._id}
+                    id={event._id}
+                    title={event.title}
+                    date={event.date}
+                    location={event.location}
+                    hospital={event.hospitalId?.name ?? 'Unknown'}
+                    description={event.description}
+                  />
+                ))}
+              </div>
+            )}
 
             <button
               onClick={() => navigate('/events')}
@@ -132,6 +174,7 @@ export const Home = () => {
             </button>
           </div>
 
+          {/* CTA */}
           <div className="bg-gradient-to-r from-red-600 to-red-700 rounded-2xl shadow-xl p-12 text-center text-white">
             <Calendar className="h-16 w-16 mx-auto mb-4" />
             <h2 className="text-3xl font-bold mb-4">Ready to Make a Difference?</h2>

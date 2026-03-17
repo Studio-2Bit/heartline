@@ -32,8 +32,8 @@ function AppContent() {
     window.location.hash = page; // triggers hashchange → setCurrentPage
   };
 
-  // Temporary: disable login
-  // if (!isAuthenticated) return <Login />;
+  
+  //if (!isAuthenticated) return <Login />;
 
   const renderPage = () => {
     switch (currentPage) {

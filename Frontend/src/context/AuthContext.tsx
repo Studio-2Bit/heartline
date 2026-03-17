@@ -18,6 +18,7 @@ interface User {
 
 interface AuthContextType {
   user: User | null;
+  isLoading: boolean;  // ← new
   login: (email: string, password: string, role: 'donor' | 'hospital') => Promise<void>;
   register: (name: string, email: string, password: string, role: 'donor' | 'hospital') => Promise<void>;
   logout: () => void;
@@ -28,26 +29,25 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);  // ← start true
 
   useEffect(() => {
+    // Read from localStorage on mount
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
+    setIsLoading(false);  // ← done loading
   }, []);
 
-  // 🔐 LOGIN — no verification check here, routing handles redirects
   const login = async (email: string, password: string, role: 'donor' | 'hospital') => {
     const response = await loginApi({ email, password, role });
     const { user, token } = response.data;
-
-    // Always save the latest user from backend — isVerified gets updated here
     setUser(user);
     localStorage.setItem('user', JSON.stringify(user));
     localStorage.setItem('token', token);
   };
 
-  // 📝 REGISTER
   const register = async (
     name: string,
     email: string,
@@ -56,13 +56,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   ) => {
     const response = await registerApi({ name, email, password, role });
     const { user, token } = response.data;
-
     setUser(user);
     localStorage.setItem('user', JSON.stringify(user));
     localStorage.setItem('token', token);
   };
 
-  // ✅ Called after completing profile form
   const markProfileCompleted = () => {
     if (!user) return;
     const updated = { ...user, profileCompleted: true };
@@ -70,7 +68,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem('user', JSON.stringify(updated));
   };
 
-  // 🚪 LOGOUT
   const logout = () => {
     setUser(null);
     localStorage.removeItem('user');
@@ -78,7 +75,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, markProfileCompleted }}>
+    <AuthContext.Provider value={{ user, isLoading, login, register, logout, markProfileCompleted }}>
       {children}
     </AuthContext.Provider>
   );

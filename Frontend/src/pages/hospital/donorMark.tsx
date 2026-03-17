@@ -120,11 +120,7 @@ export default function DonorMark() {
 
   const content = (
     <div className="max-w-6xl mx-auto space-y-8">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-red-50 to-pink-50 rounded-2xl p-8 border border-red-100">
-        <h1 className="text-4xl font-bold text-gray-900 mb-2">Mark Donor Donation</h1>
-        <p className="text-gray-600">Search for donors by MongoDB ID and record their blood donations</p>
-      </div>
+      
 
       {/* Success Message */}
       {successMessage && (
@@ -143,7 +139,7 @@ export default function DonorMark() {
             <h2 className="text-2xl font-bold text-gray-900 mb-6">Search Donor</h2>
             <form onSubmit={handleSearch} className="space-y-4">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2"> Search donor</label>
+                
                 <div className="relative">
                   <input
                     type="text"

@@ -109,27 +109,21 @@ const handleUpdatePassword = async () => {
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Settings</h1>
-        <p className="text-gray-600">Manage your system preferences and configurations</p>
-      </div>
+     
 
       <div className="space-y-6">
 
         
         <div className="bg-white rounded-xl shadow-md p-6">
-          <div className="flex items-center gap-3 mb-1">
-          </div>
+          
 
           <div className="space-y-4">
            
 
             {/* Download Weekly Report */}
-            <div className="p-4 bg-gray-50 rounded-lg">
+            <div className="p-4 bg-gray-50 rounded-lg justify-between">
               <h3 className="font-semibold text-gray-900 mb-1">Download Weekly Report</h3>
-              <p className="text-sm text-gray-600 mb-3">
-                Download a CSV file containing all system logs and activity records
-              </p>
+              
               <button
                 onClick={handleDownloadReport}
                 disabled={isDownloading}
@@ -140,9 +134,7 @@ const handleUpdatePassword = async () => {
                   : <><Download size={18} /><span>Download Report</span></>
                 }
               </button>
-              <p className="text-xs text-gray-400 mt-2">
-                Includes: log type, action, user, details, and timestamps
-              </p>
+              
             </div>
           </div>
         </div>
@@ -155,7 +147,7 @@ const handleUpdatePassword = async () => {
             </div>
             <div>
               <h2 className="text-xl font-bold text-gray-900">Security</h2>
-              <p className="text-sm text-gray-600">Manage security settings</p>
+             
             </div>
           </div>
 
@@ -204,7 +196,7 @@ const handleUpdatePassword = async () => {
             {/* Add New Admin */}
             <div className="p-4 bg-gray-50 rounded-lg">
               <h3 className="font-semibold text-gray-900 mb-1">Add New Admin</h3>
-              <p className="text-sm text-gray-600 mb-3">Add new administrator accounts to manage the system</p>
+              
 
               {!showPasswordInput && !isVerified && (
                 <button

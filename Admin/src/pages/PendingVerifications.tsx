@@ -87,10 +87,7 @@ export default function PendingVerifications() {
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Pending Verifications</h1>
-        <p className="text-gray-600">Review and approve or reject pending registrations</p>
-      </div>
+      
 
       {error && (
         <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6 flex items-center gap-3">
