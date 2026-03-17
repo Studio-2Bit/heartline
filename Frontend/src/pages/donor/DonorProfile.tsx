@@ -3,6 +3,8 @@ import { Save, Droplet, Calendar, CheckCircle, Timer, AlertCircle, Loader, MapPi
 import { DashboardLayout } from '../../layouts/DashboardLayout';
 import { PageWrapper } from '../../components/PageWrapper';
 import { FormInput } from '../../components/FormInput';
+import { useAuth } from '../../context/AuthContext';
+import Chatbot from './Chatbot';
 import api from '../../services/api';
 
 const getDaysUntilAvailable = (nextEligibleDate: string): number => {
@@ -261,6 +263,9 @@ export const DonorProfile = () => {
           </div>
         </div>
       </PageWrapper>
+      <div className="fixed bottom-8 left-8 z-50">
+              <Chatbot />
+            </div>
     </DashboardLayout>
   );
 };
