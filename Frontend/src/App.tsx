@@ -22,7 +22,7 @@ import { CreateEvent } from './pages/hospital/CreateEvent';
 import { HospitalEvents } from './pages/hospital/HospitalEvents';
 import { HospitalCompleteProfile } from './pages/hospital/CompleteProfile';
 
-// ── Guards ───────────────────────────────────────────────────────────
+
 
 const ProtectedRoute = ({
   children,
@@ -83,7 +83,6 @@ const PendingRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
-// ── Routes ───────────────────────────────────────────────────────────
 
 function AppRoutes() {
   return (

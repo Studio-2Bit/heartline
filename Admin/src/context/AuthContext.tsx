@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import axios from 'axios';
 
-const API = 'http://localhost:5000/api';
+const API = 'https://heartline-production-f1c3.up.railway.app/api';
 
 interface AdminUser {
   id: string;

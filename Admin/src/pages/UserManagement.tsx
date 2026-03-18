@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Search, Trash2, Filter, Heart, Building2, ShieldCheck, Users, AlertCircle, Droplet } from 'lucide-react';
 
-const API = 'http://localhost:5000/api/admin';
+const API = 'https://heartline-production-f1c3.up.railway.app/api/admin';
 const authHeaders = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem('adminToken')}` }
 });
