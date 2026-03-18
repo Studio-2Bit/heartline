@@ -4,7 +4,7 @@ import { Search, Trash2, Filter, Heart, Building2, ShieldCheck, Users, AlertCirc
 
 const API = 'http://localhost:5000/api/admin';
 const authHeaders = () => ({
-  headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+  headers: { Authorization: `Bearer ${localStorage.getItem('adminToken')}` }
 });
 
 const BLOOD_BADGE: Record<string, string> = {

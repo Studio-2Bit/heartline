@@ -5,22 +5,23 @@ import { MainLayout } from '../../layouts/MainLayout';
 import { PageWrapper } from '../../components/PageWrapper';
 import { FormInput } from '../../components/FormInput';
 import { UploadBox } from '../../components/UploadBox';
-import { bloodTypes } from '../../utils/helpers';
+import { bloodTypes, validatePhone, formatPhone } from '../../utils/helpers';
 import api from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 
 export const DonorCompleteProfile = () => {
-  const { markProfileCompleted } = useAuth(); 
+  const { markProfileCompleted } = useAuth();
   const [step, setStep] = useState(1);
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [isGettingLocation, setIsGettingLocation] = useState(false);
   const [locationDetected, setLocationDetected] = useState(false);
   const [error, setError] = useState('');
+  const [phoneError, setPhoneError] = useState('');
 
   const [formData, setFormData] = useState({
     location: '',
-    phone: '',
+    phone: '+94',
     bloodType: '',
     registrationNumber: '',
     idProof: null as File | null,
@@ -52,6 +53,14 @@ export const DonorCompleteProfile = () => {
   };
 
   const handleNext = () => {
+    // validate phone on step 1 before proceeding
+    if (step === 1) {
+      const err = validatePhone(formData.phone);
+      if (err) {
+        setPhoneError(err);
+        return;
+      }
+    }
     if (step < 3) {
       setStep(step + 1);
     } else {
@@ -80,7 +89,7 @@ export const DonorCompleteProfile = () => {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 
-      markProfileCompleted(); // ← now uses the one declared at top
+      markProfileCompleted();
       navigate('/pending-verification');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to complete profile');
@@ -135,6 +144,8 @@ export const DonorCompleteProfile = () => {
               {step === 1 && (
                 <div>
                   <h2 className="text-xl font-bold text-gray-800 mb-4">Basic Information</h2>
+
+                  {/* Location + GPS */}
                   <div className="mb-4">
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Location <span className="text-red-600">*</span>
@@ -165,14 +176,32 @@ export const DonorCompleteProfile = () => {
                       </p>
                     )}
                   </div>
-                  <FormInput
-                    label="Phone Number"
-                    type="tel"
-                    value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    placeholder="+94 77 000 0000"
-                    required
-                  />
+
+                  {/* Phone with validation */}
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Phone Number <span className="text-red-600">*</span>
+                    </label>
+                    <input
+                      type="tel"
+                      value={formData.phone}
+                      onChange={(e) => {
+                        const formatted = formatPhone(e.target.value);
+                        setFormData({ ...formData, phone: formatted });
+                        setPhoneError(validatePhone(formatted) || '');
+                      }}
+                      placeholder="+94771234567"
+                      className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 outline-none transition ${
+                        phoneError ? 'border-red-400' : 'border-gray-300'
+                      }`}
+                    />
+                    {phoneError
+                      ? <p className="text-red-500 text-xs mt-1">{phoneError}</p>
+                      : formData.phone.length === 12 && !phoneError
+                        ? <p className="text-green-600 text-xs mt-1 flex items-center gap-1"><CheckCircle className="h-3 w-3" />Valid phone number</p>
+                        : <p className="text-gray-400 text-xs mt-1">Format: +94771234567 (12 characters)</p>
+                    }
+                  </div>
                 </div>
               )}
 

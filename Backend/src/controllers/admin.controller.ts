@@ -251,12 +251,20 @@ export const getDashboardStats = async (req: Request, res: Response) => {
 export const verifyAdminPassword = async (req: Request, res: Response) => {
   try {
     const { password } = req.body;
-    const admin = await User.findById((req as any).user.id);
+    const userId = (req as any).user.id;
+    console.log('verify - userId:', userId);
+    console.log('verify - password entered:', password);
+
+    const admin = await User.findById(userId);
+    console.log('verify - admin found:', admin?.email);
+    console.log('verify - stored hash:', admin?.password);
+
     if (!admin) return res.status(404).json({ message: 'Admin not found' });
 
     const isMatch = await bcrypt.compare(password, admin.password);
-    if (!isMatch) return res.status(401).json({ message: 'Incorrect password' });
+    console.log('verify - isMatch:', isMatch);
 
+    if (!isMatch) return res.status(401).json({ message: 'Incorrect password' });
     return res.status(200).json({ message: 'Verified' });
   } catch (error) {
     return res.status(500).json({ message: 'Server error', error });
