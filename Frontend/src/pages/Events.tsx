@@ -38,15 +38,16 @@ export const Events = () => {
     setError('');
     try {
       const data = await getAllActiveEventsApi();
-      setEvents(data.events);
+      setEvents(data.events || []);
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to fetch events');
+      setEvents([]);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const filteredEvents = events.filter((event) =>
+  const filteredEvents = (events || []).filter((event) =>
     event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
     event.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
     event.hospitalId?.name?.toLowerCase().includes(searchTerm.toLowerCase())
