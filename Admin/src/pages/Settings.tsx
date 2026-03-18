@@ -59,7 +59,7 @@ export default function Settings() {
     try {
       // use adminToken for auth header
       await axios.put(
-        'http://localhost:5000/api/auth/update-password',
+        'https://heartline-production-f1c3.up.railway.app/api/auth/update-password',
         { currentPassword: pwData.currentPassword, newPassword: pwData.newPassword },
         authHeaders()
       );
