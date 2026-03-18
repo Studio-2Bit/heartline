@@ -38,7 +38,7 @@ export const Events = () => {
     setError('');
     try {
       const data = await getAllActiveEventsApi();
-      setEvents(data.data.events);
+      setEvents(data.events);
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to fetch events');
     } finally {
