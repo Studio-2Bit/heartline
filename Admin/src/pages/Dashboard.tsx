@@ -4,7 +4,7 @@ import axios from 'axios';
 
 const API = 'http://localhost:5000/api/admin';
 const authHeaders = () => ({
-  headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+  headers: { Authorization: `Bearer ${localStorage.getItem('adminToken')}` },
 });
 
 const timeAgo = (date: string) => {

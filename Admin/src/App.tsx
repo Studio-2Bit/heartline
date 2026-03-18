@@ -18,7 +18,8 @@ const getPageFromHash = () => {
 };
 
 function AppContent() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated,isLoading } = useAuth();
+ 
   const [currentPage, setCurrentPage] = useState(getPageFromHash);
 
   // Re-render when hash changes (back/forward or direct hash set)
@@ -31,9 +32,14 @@ function AppContent() {
   const handleNavigate = (page: string) => {
     window.location.hash = page; // triggers hashchange → setCurrentPage
   };
+    if (isLoading) return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="w-8 h-8 border-4 border-red-600 border-t-transparent rounded-full animate-spin" />
+    </div>
+  );
 
   
-  //if (!isAuthenticated) return <Login />;
+  if (!isAuthenticated) return <Login />;
 
   const renderPage = () => {
     switch (currentPage) {

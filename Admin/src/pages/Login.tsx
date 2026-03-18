@@ -1,14 +1,15 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, Loader } from 'lucide-react';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
@@ -17,9 +18,16 @@ export default function Login() {
       return;
     }
 
-    const success = login(email, password);
-    if (!success) {
-      setError('Invalid email or password');
+    setIsLoading(true);
+    try {
+      const success = await login(email, password);
+      if (!success) {
+        setError('Invalid email or password. Make sure you are an admin.');
+      }
+    } catch {
+      setError('Something went wrong. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -35,7 +43,7 @@ export default function Login() {
             </div>
           </div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Admin Portal</h1>
-          <p className="text-gray-600">Blood Bank Management System</p>
+          <p className="text-gray-600">Heartline Blood Bank Management</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -47,25 +55,19 @@ export default function Login() {
           )}
 
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-              Email Address
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
             <input
-              id="email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition-all"
-              placeholder="admin@bloodbank.com"
+              placeholder="admin@heartline.com"
             />
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-              Password
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
             <input
-              id="password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -76,18 +78,15 @@ export default function Login() {
 
           <button
             type="submit"
-            className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 rounded-lg transition-colors duration-200 shadow-lg hover:shadow-xl"
+            disabled={isLoading}
+            className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 rounded-lg transition-colors disabled:bg-gray-400 flex items-center justify-center gap-2"
           >
-            Sign In
+            {isLoading
+              ? <><Loader className="h-4 w-4 animate-spin" /><span>Signing in...</span></>
+              : 'Sign In'
+            }
           </button>
         </form>
-
-        <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-          <p className="text-xs text-gray-600 text-center">
-            Demo credentials:<br />
-            <span className="font-mono text-gray-800">admin@bloodbank.com / admin123</span>
-          </p>
-        </div>
       </div>
     </div>
   );
