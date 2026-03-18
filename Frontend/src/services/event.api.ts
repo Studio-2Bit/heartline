@@ -2,8 +2,8 @@ import api from './api';
 import axios from 'axios';
 
 export const getAllActiveEventsApi = async () => {
-  const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/events`);
-  return data;
+  const response = await axios.get(`${import.meta.env.VITE_API_URL}/events`);
+  return response.data;
 };
 
 export const getEventByIdApi = (id: string) => {
