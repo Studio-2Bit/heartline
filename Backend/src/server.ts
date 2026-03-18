@@ -5,6 +5,17 @@ import app from './app';
 import { connectDB } from './config/db';
 import { config } from './config/env';
 
+import fs from 'fs';
+import path from 'path';
+
+console.log('__dirname:', __dirname);
+console.log('dist contents:', fs.readdirSync(path.join(__dirname)));
+try {
+  console.log('dist/data contents:', fs.readdirSync(path.join(__dirname, 'data')));
+} catch {
+  console.log('dist/data folder does not exist');
+}
+
 const startServer = async () => {
   try {
     // Connect to MongoDB
