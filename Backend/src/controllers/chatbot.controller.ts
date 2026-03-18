@@ -8,17 +8,28 @@ dotenv.config();
 
 const client = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
-// Load FAQ JSON
-const faqPath = path.join(__dirname, "../data/blood_faq.json");
-const faqData: { question: string; answer: string }[] = JSON.parse(
-  fs.readFileSync(faqPath, "utf-8")
-);
+// ✅ works in both dev (src/controllers) and production (dist/controllers)
+const faqPath = path.join(__dirname, "../../src/data/blood_faq.json");
+const fallbackPath = path.join(__dirname, "../data/blood_faq.json");
 
-// Better keyword-based matching
+let faqData: { question: string; answer: string }[] = [];
+
+try {
+  // try production path first
+  if (fs.existsSync(faqPath)) {
+    faqData = JSON.parse(fs.readFileSync(faqPath, "utf-8"));
+  } else if (fs.existsSync(fallbackPath)) {
+    faqData = JSON.parse(fs.readFileSync(fallbackPath, "utf-8"));
+  } else {
+    console.warn("blood_faq.json not found — FAQ matching disabled");
+  }
+} catch (err) {
+  console.error("Failed to load blood_faq.json:", err);
+}
+
 function checkFAQ(message: string): string | null {
   const lowerMsg = message.toLowerCase();
   for (const item of faqData) {
-    // split question into keywords and check if any appear in user message
     const keywords = item.question.toLowerCase().split(" ");
     const match = keywords.some(word => lowerMsg.includes(word));
     if (match) return item.answer;
@@ -35,7 +46,7 @@ export const chatWithGroq = async (req: Request, res: Response) => {
     const faqAnswer = checkFAQ(message);
     if (faqAnswer) return res.json({ reply: faqAnswer });
 
-    // AI fallback with stronger prompt
+    // AI fallback
     const completion = await client.chat.completions.create({
       model: "openai/gpt-oss-20b",
       messages: [
@@ -49,7 +60,7 @@ Do not explain unrelated points or add extra information.`
         },
         { role: "user", content: message }
       ],
-      temperature: 0.5 // lower temp = more precise answers
+      temperature: 0.5
     });
 
     const reply = completion.choices[0].message.content?.trim() || "";
