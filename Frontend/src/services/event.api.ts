@@ -1,7 +1,9 @@
 import api from './api';
+import axios from 'axios';
 
-export const getAllActiveEventsApi = () => {
-  return api.get('/events');
+export const getAllActiveEventsApi = async () => {
+  const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/events`);
+  return data;
 };
 
 export const getEventByIdApi = (id: string) => {
@@ -40,3 +42,8 @@ export const approveEventApi = (id: string) => {
 export const rejectEventApi = (id: string) => {
   return api.patch(`/events/${id}/reject`);
 };
+
+
+
+
+

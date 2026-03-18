@@ -11,7 +11,7 @@ export const Footer = () => {
               <div className="bg-red-600 p-2 rounded-lg">
                 <Droplet className="h-6 w-6" />
               </div>
-              <span className="text-xl font-bold">BloodConnect</span>
+              <span className="text-xl font-bold">HeartLine</span>
             </div>
             <p className="text-gray-400 text-sm">
               Connecting blood donors with hospitals to save lives every day.
@@ -44,15 +44,15 @@ export const Footer = () => {
             <ul className="space-y-2">
               <li className="flex items-center text-gray-400 text-sm">
                 <Mail className="h-4 w-4 mr-2" />
-                contact@bloodconnect.com
+                contact@heartline.com
               </li>
               <li className="flex items-center text-gray-400 text-sm">
                 <Phone className="h-4 w-4 mr-2" />
-                +1 (555) 123-4567
+                +94 11 123-4567
               </li>
               <li className="flex items-center text-gray-400 text-sm">
                 <MapPin className="h-4 w-4 mr-2" />
-                123 Health St, Medical City
+                123 Health St, Medical City,colombo 6
               </li>
             </ul>
           </div>
@@ -75,7 +75,7 @@ export const Footer = () => {
 
         <div className="border-t border-gray-700 mt-8 pt-8 text-center">
           <p className="text-gray-400 text-sm">
-            © 2025 BloodConnect. All rights reserved.
+            © 2025 HeartLine. All rights reserved.
           </p>
         </div>
       </div>

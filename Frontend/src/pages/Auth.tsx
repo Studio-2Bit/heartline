@@ -84,7 +84,7 @@ export const Auth = () => {
               {/* LEFT */}
               <div className="hidden md:flex bg-red-700 text-white p-12 flex-col justify-center">
                 <Droplet className="h-14 w-14 mb-6" />
-                <h2 className="text-4xl font-bold mb-4">BloodConnect</h2>
+                <h2 className="text-4xl font-bold mb-4">HeartLine</h2>
                 <p>Saving lives together.</p>
               </div>
 

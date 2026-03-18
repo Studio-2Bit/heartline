@@ -13,7 +13,7 @@ import { protect } from '../middlewares/auth.middleware';
 
 const router = express.Router();
 
-router.get('/', protect, getActiveEvents);              // Donors — see active events only
+router.get('/', getActiveEvents);              // Donors — see active events only
 router.post('/', protect, createEvent);                 // Hospital — create event (pending)
 router.get('/hospital', protect, getHospitalEvents);    // Hospital — see their own events
 router.get('/:id', getEventById);                 // Public — see event details
